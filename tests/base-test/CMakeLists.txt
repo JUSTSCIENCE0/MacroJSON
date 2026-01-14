@@ -1,4 +1,4 @@
-# Copyright (c) 2025, Yakov Usoltsev
+# Copyright (c) 2026, Yakov Usoltsev
 # Email: yakovmen62@gmail.com
 #
 # License: MIT
