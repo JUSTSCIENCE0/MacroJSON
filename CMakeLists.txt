@@ -56,6 +56,7 @@ if (NOT TARGET RapidJSON)
     set(RAPIDJSON_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
     set(RAPIDJSON_BUILD_TESTS OFF CACHE BOOL "" FORCE)
     FetchContent_MakeAvailable(RapidJSON)
+    set_property(TARGET travis_doc PROPERTY FOLDER "externals/RapidJSON")
 endif()
 
 # googletest
