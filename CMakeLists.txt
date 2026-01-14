@@ -85,6 +85,7 @@ target_sources(MacroJSON
 target_include_directories(MacroJSON
     INTERFACE
         include/
+        ${RapidJSON_SOURCE_DIR}/include/
 )
 
 target_link_libraries(MacroJSON
