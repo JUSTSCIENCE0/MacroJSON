@@ -53,11 +53,11 @@ namespace macrojson {
 
     // Fundamental types readers
 #define JSON_READER(type, checker, getter) \
-    static inline MJsonErrorCode read_from_json(const Document& d, const char* name, type& val) { \
-        if (!d.HasMember(name)) { \
+    static inline MJsonErrorCode read_from_json(const Value& obj, const char* name, type& val) { \
+        if (!obj.HasMember(name)) { \
             return E_MJSON_NOT_EXISTS; \
         } \
-        const Value& jval = d[name]; \
+        const Value& jval = obj[name]; \
         if (!jval.checker()) { \
             return E_MJSON_TYPE_MISMATCH; \
         } \
