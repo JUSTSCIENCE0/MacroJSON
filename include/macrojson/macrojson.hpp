@@ -9,9 +9,17 @@
 #include <rapidjson/writer.h>
 
 #include <cstdint>
+#include <string>
 
 namespace macrojson {
     using namespace rapidjson;
+
+    // error codes
+    enum MJsonErrorCode {
+        E_MJSON_OK = 0,
+        E_MJSON_NOT_EXISTS,
+        E_MJSON_TYPE_MISMATCH
+    };
 
     // Fundamental types writers
     static inline void write_to_json(const char* name, Value&& jval, Document& d) {
@@ -20,9 +28,9 @@ namespace macrojson {
         d.AddMember(jname, jval, d.GetAllocator());
     }
 
-    static inline void write_to_json(const char* name, const char* val, Document& d) {
+    static inline void write_to_json(const char* name, const std::string& val, Document& d) {
         Value jval;
-        jval.SetString(val, d.GetAllocator());
+        jval.SetString(val.c_str(), d.GetAllocator());
         write_to_json(name, std::move(jval), d);
     }
 
@@ -44,8 +52,32 @@ namespace macrojson {
 #undef JSON_WRITER
 
     // Fundamental types readers
+#define JSON_READER(type, checker, getter) \
+    static inline MJsonErrorCode read_from_json(const Document& d, const char* name, type& val) { \
+        if (!d.HasMember(name)) { \
+            return E_MJSON_NOT_EXISTS; \
+        } \
+        const Value& jval = d[name]; \
+        if (!jval.checker()) { \
+            return E_MJSON_TYPE_MISMATCH; \
+        } \
+        val = jval.getter(); \
+        return E_MJSON_OK; \
+    }
 
+    JSON_READER(std::string, IsString, GetString)
+    JSON_READER(int32_t,     IsInt,    GetInt)
+    JSON_READER(int64_t,     IsInt64,  GetInt64)
+    JSON_READER(uint32_t,    IsUint,   GetUint)
+    JSON_READER(uint64_t,    IsUint64, GetUint64)
+    JSON_READER(float,       IsFloat,  GetFloat)
+    JSON_READER(double,      IsDouble, GetDouble)
+
+#undef JSON_READER
+
+    // Fundamental types validators
+    // TODO
 
     // Fundamental types schemas
-
+    // TODO
 }
