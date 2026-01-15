@@ -77,6 +77,7 @@ add_library(MacroJSON INTERFACE)
 target_sources(MacroJSON
     PRIVATE
         include/macrojson/macrojson.hpp
+        include/macrojson/object.hpp
         include/macrojson/reader.hpp
         include/macrojson/schema.hpp
         include/macrojson/writer.hpp
