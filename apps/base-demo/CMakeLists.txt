@@ -7,8 +7,22 @@ cmake_minimum_required(VERSION 3.22)
 
 project(base-demo)
 
+macrojson_generate_header(
+    example_descr.h
+    example.hpp
+)
+
 add_executable(${PROJECT_NAME}
+    example_descr.h
+    generated/example.hpp
+
     main.cpp
+)
+
+target_include_directories(${PROJECT_NAME}
+    PRIVATE
+        ${CMAKE_CURRENT_LIST_DIR}/
+        ${CMAKE_CURRENT_LIST_DIR}/generated
 )
 
 target_link_libraries(${PROJECT_NAME}
