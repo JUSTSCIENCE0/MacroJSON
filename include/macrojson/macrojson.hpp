@@ -11,6 +11,14 @@
 #include <cstdint>
 #include <string>
 
+#define MJSON_CHECK_ERROR(code) \
+    do { \
+        macrojson::MJsonErrorCode err = code; \
+        if (err != macrojson::MJsonErrorCode::E_MJSON_OK) { \
+            return err; \
+        } \
+    } while (0)
+
 namespace macrojson {
     using namespace rapidjson;
 
@@ -20,14 +28,6 @@ namespace macrojson {
         E_MJSON_NOT_EXISTS,
         E_MJSON_TYPE_MISMATCH
     };
-
-#define MJSON_CHECK_ERROR(code) \
-    do { \
-        MJsonErrorCode err = code; \
-        if (err != E_MJSON_OK) { \
-            return err; \
-        } \
-    } while (0)
 
     // Fundamental types writers
     static inline void write_to_json(const char* name, Value&& jval, Document& d) {
