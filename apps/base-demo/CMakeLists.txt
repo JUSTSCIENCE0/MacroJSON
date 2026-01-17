@@ -18,6 +18,8 @@ add_executable(${PROJECT_NAME}
 
     write_example.cpp
     write_example.hpp
+    read_example.cpp
+    read_example.hpp
     main.cpp
 )
 
@@ -30,6 +32,11 @@ target_include_directories(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
         MacroJSON
+)
+
+target_compile_definitions(${PROJECT_NAME}
+    PRIVATE
+        JSON_EXAMPLES_DIRECTORY="${CMAKE_CURRENT_LIST_DIR}/json_samples/"
 )
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY FOLDER "apps")

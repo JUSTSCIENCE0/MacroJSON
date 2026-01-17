@@ -1,0 +1,93 @@
+// Copyright (c) 2026, Yakov Usoltsev
+// Email: yakovmen62@gmail.com
+//
+// License: MIT
+
+#include "rapidjson/filereadstream.h"
+
+#include "example.hpp"
+#include "read_example.hpp"
+
+#include <iostream>
+
+static inline bool read_json_from_file(const char* json_file, rapidjson::Document& doc) {
+    FILE* fp = nullptr;
+    auto err_code = fopen_s(&fp, json_file, "rb");
+    if (err_code || !fp) {
+        std::cerr << "Could not open file: " << json_file << std::endl;
+        std::cerr << "Error code: " << err_code << std::endl;
+        return false;
+    }
+    char readBuffer[1024];
+    rapidjson::FileReadStream is(fp, readBuffer, sizeof(readBuffer));
+    doc.ParseStream(is);
+    fclose(fp);
+    if (doc.HasParseError()) {
+        std::cerr << "Error parsing JSON file: " << json_file << std::endl;
+        return false;
+    }
+    return true;
+}
+
+void simple_read_example() {
+    rapidjson::Document doc;
+    if (!read_json_from_file(JSON_EXAMPLES_DIRECTORY "simple_example.json", doc)) {
+        return;
+    }
+
+    SimpleExample example{};
+    auto code = macrojson::read_from_json(nullptr, doc, example);
+    if (code != macrojson::MJsonErrorCode::E_MJSON_OK) {
+        std::cerr << "Error reading SimpleExample from JSON." << std::endl;
+        return;
+    }
+
+    std::cout << "simple_read_example" << std::endl;
+    std::cout << "Deserialized JSON (part):" << std::endl;
+    std::cout << "i32_attr = " << example.i32_attr << std::endl;
+    std::cout << "str_attr = " << example.str_attr << std::endl;
+    std::cout << std::endl;
+}
+
+void level1_read_example() {
+    rapidjson::Document doc;
+    if (!read_json_from_file(JSON_EXAMPLES_DIRECTORY "level1_example.json", doc)) {
+        return;
+    }
+
+    Level1Example example{};
+    auto code = macrojson::read_from_json(nullptr, doc, example);
+    if (code != macrojson::MJsonErrorCode::E_MJSON_OK) {
+        std::cerr << "Error reading SimpleExample from JSON." << std::endl;
+        return;
+    }
+
+    std::cout << "level1_read_example" << std::endl;
+    std::cout << "Deserialized JSON (part):" << std::endl;
+    std::cout << "i32_attr = " << example.i32_attr << std::endl;
+    std::cout << "obj_attr.str_attr = " << example.obj_attr.str_attr << std::endl;
+    std::cout << std::endl;
+}
+
+void level2_read_example() {
+    rapidjson::Document doc;
+    if (!read_json_from_file(JSON_EXAMPLES_DIRECTORY "level2_example.json", doc)) {
+        return;
+    }
+
+    Level2Example example{};
+    auto code = macrojson::read_from_json(nullptr, doc, example);
+    if (code != macrojson::MJsonErrorCode::E_MJSON_OK) {
+        std::cerr << "Error reading SimpleExample from JSON." << std::endl;
+        return;
+    }
+
+    std::cout << "level2_read_example" << std::endl;
+    std::cout << "Deserialized JSON (part):" << std::endl;
+    std::cout << "u64_attr = " << example.u64_attr << std::endl;
+    std::cout << "smp_attr.str_attr = " << example.smp_attr.str_attr << std::endl;
+    std::cout << "lvl_attr.i32_attr = " << example.lvl_attr.i32_attr << std::endl;
+    std::cout << "lvl_attr.obj_attr.str_attr = " <<
+        example.lvl_attr.obj_attr.str_attr << std::endl;
+    std::cout << std::endl;
+}
