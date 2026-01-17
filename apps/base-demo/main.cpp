@@ -7,5 +7,7 @@
 
 int main() {
     simple_write_example();
+    level1_write_example();
+    level2_write_example();
     return 0;
 }
