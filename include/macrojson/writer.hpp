@@ -16,10 +16,12 @@
 #endif
 
 #define MJSON_OBJECT_BEGIN(obj_name) \
+namespace macrojson { \
     static inline void write_to_json(const char*, const obj_name& jval, rapidjson::Document& d) {
 
 #define MJSON_FIELD(type, field, ...) \
-        macrojson::write_to_json(#field, jval.field, d);
+        write_to_json(#field, jval.field, d);
 
 #define MJSON_OBJECT_END(obj_name) \
-    }
+    } \
+}
