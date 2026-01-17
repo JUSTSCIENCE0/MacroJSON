@@ -17,7 +17,8 @@
 
 #define MJSON_OBJECT_BEGIN(obj_name) \
 namespace macrojson { \
-    static inline MJsonErrorCode read_from_json(const rapidjson::Value& root, const char* name, obj_name& val) { \
+    static inline MJsonErrorCode read_from_json( \
+            const char* name, const rapidjson::Value& root, obj_name& val) { \
         if (name && !root.HasMember(name)) { \
             return MJsonErrorCode::E_MJSON_NOT_EXISTS; \
         } \
@@ -28,7 +29,7 @@ namespace macrojson { \
         } \
 
 #define MJSON_FIELD(type, field, ...) \
-        MJSON_CHECK_ERROR(read_from_json(obj, #field, val.field));
+        MJSON_CHECK_ERROR(read_from_json(#field, obj, val.field));
 
 #define MJSON_OBJECT_END(obj_name) \
         return MJsonErrorCode::E_MJSON_OK; \

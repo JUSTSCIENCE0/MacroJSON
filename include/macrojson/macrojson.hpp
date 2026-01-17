@@ -65,7 +65,7 @@ namespace macrojson {
     // Fundamental types readers
 #define JSON_READER(type, checker, getter) \
     static inline MJsonErrorCode read_from_json( \
-            const Value& root, const char* name, type& val) { \
+            const char* name, const Value& root, type& val) { \
         if (!root.HasMember(name)) { \
             return E_MJSON_NOT_EXISTS; \
         } \
