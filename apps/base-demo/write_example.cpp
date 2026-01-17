@@ -4,6 +4,7 @@
 // License: MIT
 
 #include "example.hpp"
+#include "write_example.hpp"
 
 #include <iostream>
 
