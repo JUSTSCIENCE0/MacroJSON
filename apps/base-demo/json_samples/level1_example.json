@@ -1,0 +1,10 @@
+{
+    "i32_attr": 7,
+    "dbl_attr": 2.718,
+    "obj_attr": {
+        "i32_attr": 100,
+        "dbl_attr": 1.618,
+        "u64_attr": 9876543210987654321,
+        "str_attr": "Nested MacroJSON!"
+    }
+}

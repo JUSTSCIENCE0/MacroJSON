@@ -1,0 +1,6 @@
+{
+    "i32_attr": 42,
+    "dbl_attr": 3.14,
+    "u64_attr": 1234567890123456789,
+    "str_attr": "Hello, MacroJSON!"
+}

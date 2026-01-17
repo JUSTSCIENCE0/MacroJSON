@@ -1,0 +1,19 @@
+{
+    "u64_attr": 5555555555555555555,
+    "smp_attr": {
+        "i32_attr": 256,
+        "dbl_attr": 0.5772,
+        "u64_attr": 112233445566778899,
+        "str_attr": "Level 2 Simple Example"
+    },
+    "lvl_attr": {
+        "i32_attr": 128,
+        "dbl_attr": 1.414,
+        "obj_attr": {
+            "i32_attr": 512,
+            "dbl_attr": 2.236,
+            "u64_attr": 998877665544332211,
+            "str_attr": "Level 2 Nested Simple Example"
+        }
+    }
+}
