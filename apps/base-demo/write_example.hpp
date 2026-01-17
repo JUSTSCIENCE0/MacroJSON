@@ -3,9 +3,6 @@
 //
 // License: MIT
 
-#include "write_example.hpp"
+#pragma once
 
-int main() {
-    simple_write_example();
-    return 0;
-}
+void simple_write_example();
