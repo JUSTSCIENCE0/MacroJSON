@@ -18,7 +18,7 @@ void simple_write_example() {
     rapidjson::Document doc;
     doc.SetObject();
 
-    macrojson::write_to_json(nullptr, example, doc);
+    macrojson::write_to_json(nullptr, example, doc.GetAllocator(), doc);
 
     rapidjson::StringBuffer buffer;
     rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);

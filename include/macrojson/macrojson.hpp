@@ -30,23 +30,26 @@ namespace macrojson {
     };
 
     // Fundamental types writers
-    static inline void write_to_json(const char* name, Value&& jval, Document& d) {
+    static inline void write_to_json(
+            const char* name, Value&& jval, Document::AllocatorType& alloc, Value& root) {
         Value jname;
-        jname.SetString(name, d.GetAllocator());
-        d.AddMember(jname, jval, d.GetAllocator());
+        jname.SetString(name, alloc);
+        root.AddMember(jname, jval, alloc);
     }
 
-    static inline void write_to_json(const char* name, const std::string& val, Document& d) {
+    static inline void write_to_json(
+            const char* name, const std::string& val, Document::AllocatorType& alloc, Value& root) {
         Value jval;
-        jval.SetString(val.c_str(), d.GetAllocator());
-        write_to_json(name, std::move(jval), d);
+        jval.SetString(val.c_str(), alloc);
+        write_to_json(name, std::move(jval), alloc, root);
     }
 
 #define JSON_WRITER(type, setter) \
-    static inline void write_to_json(const char* name, type val, Document& d) { \
+    static inline void write_to_json( \
+            const char* name, type val, Document::AllocatorType& alloc, Value& root) { \
         Value jval; \
         jval.setter(val); \
-        write_to_json(name, std::move(jval), d); \
+        write_to_json(name, std::move(jval), alloc, root); \
     }
 
     JSON_WRITER(int32_t,  SetInt)
@@ -61,11 +64,12 @@ namespace macrojson {
 
     // Fundamental types readers
 #define JSON_READER(type, checker, getter) \
-    static inline MJsonErrorCode read_from_json(const Value& obj, const char* name, type& val) { \
-        if (!obj.HasMember(name)) { \
+    static inline MJsonErrorCode read_from_json( \
+            const Value& root, const char* name, type& val) { \
+        if (!root.HasMember(name)) { \
             return E_MJSON_NOT_EXISTS; \
         } \
-        const Value& jval = obj[name]; \
+        const Value& jval = root[name]; \
         if (!jval.checker()) { \
             return E_MJSON_TYPE_MISMATCH; \
         } \
