@@ -10,6 +10,7 @@
 
 #include <cstdint>
 #include <string>
+#include <vector>
 
 #define MJSON_CHECK_ERROR(code) \
     do { \
@@ -32,9 +33,14 @@ namespace macrojson {
     // Fundamental types writers
     static inline void write_to_json(
             const char* name, Value&& jval, Document::AllocatorType& alloc, Value& root) {
-        Value jname;
-        jname.SetString(name, alloc);
-        root.AddMember(jname, jval, alloc);
+        if (name == nullptr) {
+            root = std::move(jval);
+        }
+        else {
+            Value jname;
+            jname.SetString(name, alloc);
+            root.AddMember(jname, jval, alloc);
+        }
     }
 
     static inline void write_to_json(
@@ -42,6 +48,18 @@ namespace macrojson {
         Value jval;
         jval.SetString(val.c_str(), alloc);
         write_to_json(name, std::move(jval), alloc, root);
+    }
+
+    template<typename T>
+    void write_to_json(
+            const char* name, std::vector<T> val, Document::AllocatorType& alloc, Value& root) {
+        Value jarr(kArrayType);
+        for (const auto& item : val) {
+            Value jval;
+            write_to_json(nullptr, item, alloc, jval);
+            jarr.PushBack(jval, alloc);
+        }
+        write_to_json(name, std::move(jarr), alloc, root);
     }
 
 #define JSON_WRITER(type, setter) \
@@ -63,13 +81,34 @@ namespace macrojson {
 #undef JSON_WRITER
 
     // Fundamental types readers
+    template<typename T>
+    MJsonErrorCode read_from_json(const char* name, const Value& root, std::vector<T>& val) {
+        val.clear();
+
+        if (name && !root.HasMember(name)) {
+            return E_MJSON_NOT_EXISTS;
+        }
+        const Value& jval = name ? root[name] : root;
+        if (!jval.IsArray()) {
+            return E_MJSON_TYPE_MISMATCH;
+        }
+
+        for (const auto& item : jval.GetArray()) {
+            T elem{};
+            MJSON_CHECK_ERROR(read_from_json(nullptr, item, elem));
+            val.emplace_back(std::move(elem));
+        }
+
+        return E_MJSON_OK;
+    }
+
 #define JSON_READER(type, checker, getter) \
     static inline MJsonErrorCode read_from_json( \
             const char* name, const Value& root, type& val) { \
-        if (!root.HasMember(name)) { \
+        if (name && !root.HasMember(name)) { \
             return E_MJSON_NOT_EXISTS; \
         } \
-        const Value& jval = root[name]; \
+        const Value& jval = name ? root[name] : root; \
         if (!jval.checker()) { \
             return E_MJSON_TYPE_MISMATCH; \
         } \

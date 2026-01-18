@@ -91,3 +91,19 @@ void level2_read_example() {
         example.lvl_attr.obj_attr.str_attr << std::endl;
     std::cout << std::endl;
 }
+
+void array_read_example() {
+    rapidjson::Document doc;
+    if (!read_json_from_file(JSON_EXAMPLES_DIRECTORY "array_example.json", doc)) {
+        return;
+    }
+
+    ArrayExample example{};
+    auto code = macrojson::read_from_json(nullptr, doc, example);
+    if (code != macrojson::MJsonErrorCode::E_MJSON_OK) {
+        std::cerr << "Error reading SimpleExample from JSON." << std::endl;
+        return;
+    }
+
+    std::cout << "array_read_example" << std::endl;
+}

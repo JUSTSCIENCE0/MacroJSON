@@ -10,9 +10,11 @@ int main() {
     simple_write_example();
     level1_write_example();
     level2_write_example();
+    array_write_example();
 
     simple_read_example();
     level1_read_example();
     level2_read_example();
+    array_read_example();
     return 0;
 }

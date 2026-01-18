@@ -11,6 +11,10 @@
 #  undef MJSON_FIELD
 #endif
 
+#ifdef MJSON_ARRAY
+#  undef MJSON_ARRAY
+#endif
+
 #ifdef MJSON_OBJECT_END
 #  undef MJSON_OBJECT_END
 #endif
@@ -29,6 +33,9 @@ namespace macrojson { \
         } \
 
 #define MJSON_FIELD(type, field, ...) \
+        MJSON_CHECK_ERROR(read_from_json(#field, obj, val.field));
+
+#define MJSON_ARRAY(type, field, ...) \
         MJSON_CHECK_ERROR(read_from_json(#field, obj, val.field));
 
 #define MJSON_OBJECT_END(obj_name) \
