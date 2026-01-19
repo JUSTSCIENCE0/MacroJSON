@@ -11,10 +11,6 @@
 #  undef MJSON_FIELD
 #endif
 
-#ifdef MJSON_ARRAY
-#  undef MJSON_ARRAY
-#endif
-
 #ifdef MJSON_OBJECT_END
 #  undef MJSON_OBJECT_END
 #endif
@@ -27,9 +23,6 @@ namespace macrojson { \
         rapidjson::Value jobj(rapidjson::kObjectType);
 
 #define MJSON_FIELD(type, field, ...) \
-        write_to_json(#field, jval.field, alloc, jobj);
-
-#define MJSON_ARRAY(type, field, ...) \
         write_to_json(#field, jval.field, alloc, jobj);
 
 #define MJSON_OBJECT_END(obj_name) \
