@@ -3,17 +3,7 @@
 //
 // License: MIT
 
-#ifdef MJSON_OBJECT_BEGIN
-#  undef MJSON_OBJECT_BEGIN
-#endif
-
-#ifdef MJSON_FIELD
-#  undef MJSON_FIELD
-#endif
-
-#ifdef MJSON_OBJECT_END
-#  undef MJSON_OBJECT_END
-#endif
+#include <macrojson/undef_macros.h>
 
 #define MJSON_OBJECT_BEGIN(obj_name) \
     struct obj_name {

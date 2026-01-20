@@ -1,7 +1,5 @@
-Unit tests
 Integration test
 
-Single header for undef macro's
 Read/Write object from/to file function
 Optional fields
 Enum support (human readable view)

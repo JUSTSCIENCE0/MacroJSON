@@ -81,6 +81,7 @@ target_sources(MacroJSON
         include/macrojson/reader.hpp
         include/macrojson/schema.hpp
         include/macrojson/writer.hpp
+        include/macrojson/undef_macros.h
 )
 
 target_include_directories(MacroJSON
