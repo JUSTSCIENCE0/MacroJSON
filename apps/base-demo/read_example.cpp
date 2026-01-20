@@ -30,15 +30,14 @@ static inline bool read_json_from_file(const char* json_file, rapidjson::Documen
 }
 
 void simple_read_example() {
-    rapidjson::Document doc;
-    if (!read_json_from_file(JSON_EXAMPLES_DIRECTORY "simple_example.json", doc)) {
-        return;
-    }
-
     SimpleExample example{};
-    auto code = macrojson::read_from_json(nullptr, doc, example);
+    std::string error_descr{};
+    auto code = macrojson::json_file_to_object(JSON_EXAMPLES_DIRECTORY "simple_example.json", example, error_descr);
     if (code != macrojson::MJsonErrorCode::E_MJSON_OK) {
         std::cerr << "Error reading SimpleExample from JSON." << std::endl;
+        if (!error_descr.empty()) {
+            std::cerr << error_descr << std::endl;
+        }
         return;
     }
 
@@ -50,15 +49,14 @@ void simple_read_example() {
 }
 
 void level1_read_example() {
-    rapidjson::Document doc;
-    if (!read_json_from_file(JSON_EXAMPLES_DIRECTORY "level1_example.json", doc)) {
-        return;
-    }
-
     Level1Example example{};
-    auto code = macrojson::read_from_json(nullptr, doc, example);
+    std::string error_descr{};
+    auto code = macrojson::json_file_to_object(JSON_EXAMPLES_DIRECTORY "level1_example.json", example, error_descr);
     if (code != macrojson::MJsonErrorCode::E_MJSON_OK) {
         std::cerr << "Error reading SimpleExample from JSON." << std::endl;
+        if (!error_descr.empty()) {
+            std::cerr << error_descr << std::endl;
+        }
         return;
     }
 
@@ -70,15 +68,14 @@ void level1_read_example() {
 }
 
 void level2_read_example() {
-    rapidjson::Document doc;
-    if (!read_json_from_file(JSON_EXAMPLES_DIRECTORY "level2_example.json", doc)) {
-        return;
-    }
-
     Level2Example example{};
-    auto code = macrojson::read_from_json(nullptr, doc, example);
+    std::string error_descr{};
+    auto code = macrojson::json_file_to_object(JSON_EXAMPLES_DIRECTORY "level2_example.json", example, error_descr);
     if (code != macrojson::MJsonErrorCode::E_MJSON_OK) {
         std::cerr << "Error reading SimpleExample from JSON." << std::endl;
+        if (!error_descr.empty()) {
+            std::cerr << error_descr << std::endl;
+        }
         return;
     }
 
@@ -93,15 +90,14 @@ void level2_read_example() {
 }
 
 void array_read_example() {
-    rapidjson::Document doc;
-    if (!read_json_from_file(JSON_EXAMPLES_DIRECTORY "array_example.json", doc)) {
-        return;
-    }
-
     ArrayExample example{};
-    auto code = macrojson::read_from_json(nullptr, doc, example);
+    std::string error_descr{};
+    auto code = macrojson::json_file_to_object(JSON_EXAMPLES_DIRECTORY "array_example.json", example, error_descr);
     if (code != macrojson::MJsonErrorCode::E_MJSON_OK) {
         std::cerr << "Error reading SimpleExample from JSON." << std::endl;
+        if (!error_descr.empty()) {
+            std::cerr << error_descr << std::endl;
+        }
         return;
     }
 

@@ -16,18 +16,12 @@ void simple_write_example() {
         /* str_attr */ "Hello, MacroJSON!"
     };
 
-    rapidjson::Document doc;
-    doc.SetObject();
-
-    macrojson::write_to_json(nullptr, example, doc.GetAllocator(), doc);
-
-    rapidjson::StringBuffer buffer;
-    rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
-    doc.Accept(writer);
+    std::string json{};
+    macrojson::object_to_json_str(example, json);
 
     std::cout << "simple_write_example" << std::endl;
     std::cout << "Serialized JSON:" << std::endl;
-    std::cout << buffer.GetString() << std::endl;
+    std::cout << json << std::endl;
     std::cout << std::endl;
 }
 
@@ -43,18 +37,12 @@ void level1_write_example() {
         }
     };
 
-    rapidjson::Document doc;
-    doc.SetObject();
-
-    macrojson::write_to_json(nullptr, example, doc.GetAllocator(), doc);
-
-    rapidjson::StringBuffer buffer;
-    rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
-    doc.Accept(writer);
+    std::string json{};
+    macrojson::object_to_json_str(example, json);
 
     std::cout << "level1_write_example" << std::endl;
     std::cout << "Serialized JSON:" << std::endl;
-    std::cout << buffer.GetString() << std::endl;
+    std::cout << json << std::endl;
     std::cout << std::endl;
 }
 
@@ -79,18 +67,12 @@ void level2_write_example() {
         }
     };
 
-    rapidjson::Document doc;
-    doc.SetObject();
-
-    macrojson::write_to_json(nullptr, example, doc.GetAllocator(), doc);
-
-    rapidjson::StringBuffer buffer;
-    rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
-    doc.Accept(writer);
+    std::string json{};
+    macrojson::object_to_json_str(example, json);
 
     std::cout << "level2_write_example" << std::endl;
     std::cout << "Serialized JSON:" << std::endl;
-    std::cout << buffer.GetString() << std::endl;
+    std::cout << json << std::endl;
     std::cout << std::endl;
 }
 
@@ -129,17 +111,11 @@ void array_write_example() {
         }
     };
 
-    rapidjson::Document doc;
-    doc.SetObject();
-
-    macrojson::write_to_json(nullptr, example, doc.GetAllocator(), doc);
-
-    rapidjson::StringBuffer buffer;
-    rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
-    doc.Accept(writer);
+    std::string json{};
+    macrojson::object_to_json_str(example, json);
 
     std::cout << "array_write_example" << std::endl;
     std::cout << "Serialized JSON:" << std::endl;
-    std::cout << buffer.GetString() << std::endl;
+    std::cout << json << std::endl;
     std::cout << std::endl;
 }
