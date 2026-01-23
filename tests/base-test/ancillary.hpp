@@ -83,3 +83,38 @@ static void check_object(const ArrayExample& example, const rapidjson::Value& ob
 
 #undef CHECK_ARRAY
 }
+
+static void check_object(const OptionalExample& example, const rapidjson::Value& obj) {
+    ASSERT_TRUE(obj.IsObject());
+
+#define CHECK_OPTIONAL(field, type_check, get_method) \
+    if (example.field.has_value()) { \
+        ASSERT_TRUE(obj.HasMember(#field)); \
+        const auto& field = obj[#field]; \
+        ASSERT_TRUE(field.type_check()); \
+        EXPECT_EQ(example.field.value(), field.get_method()); \
+    } else { \
+        ASSERT_FALSE(obj.HasMember(#field)); \
+    }
+
+    CHECK_OPTIONAL(i32_opt, IsInt, GetInt)
+    CHECK_OPTIONAL(dbl_opt, IsDouble, GetDouble)
+    CHECK_OPTIONAL(u64_opt, IsUint64, GetUint64)
+    CHECK_OPTIONAL(str_opt, IsString, GetString)
+#undef CHECK_OPTIONAL
+
+#define CHECK_OPTIONAL(field) \
+    if (example.field.has_value()) { \
+        ASSERT_TRUE(obj.HasMember(#field)); \
+        const auto& field = obj[#field]; \
+        ASSERT_TRUE(field.IsObject()); \
+        check_object(example.field.value(), field); \
+    } else { \
+        ASSERT_TRUE(!obj.HasMember(#field) || obj[#field].IsNull()); \
+    }
+    CHECK_OPTIONAL(smp_opt)
+    CHECK_OPTIONAL(lvl1_opt)
+    CHECK_OPTIONAL(lvl2_opt)
+
+#undef CHECK_OPTIONAL
+}

@@ -14,6 +14,7 @@
 #include <cstdint>
 #include <string>
 #include <vector>
+#include <optional>
 
 #include <fstream>
 #include <filesystem>
@@ -145,6 +146,14 @@ namespace macrojson {
         write_to_json(name, std::move(jarr), alloc, root);
     }
 
+    template<typename T>
+    void write_to_json(
+            const char* name, std::optional<T> val, Document::AllocatorType& alloc, Value& root) {
+        if (val.has_value()) {
+            write_to_json(name, val.value(), alloc, root);
+        }
+    }
+
 #define JSON_WRITER(type, setter) \
     static inline void write_to_json( \
             const char* name, type val, Document::AllocatorType& alloc, Value& root) { \
@@ -181,6 +190,29 @@ namespace macrojson {
             MJSON_CHECK_ERROR(read_from_json(nullptr, item, elem));
             val.emplace_back(std::move(elem));
         }
+
+        return E_MJSON_OK;
+    }
+
+    template<typename T>
+    MJsonErrorCode read_from_json(const char* name, const Value& root, std::optional<T>& val) {
+        val.reset();
+
+        if (name) {
+            if (!root.HasMember(name)) {
+                return E_MJSON_OK;
+            }
+            else if (root[name].IsNull()) {
+                return E_MJSON_OK;
+            }
+        }
+        else if (root.IsNull()) {
+            return E_MJSON_OK;
+        }
+
+        T temp{};
+        MJSON_CHECK_ERROR(read_from_json(name, root, temp));
+        val = std::move(temp);
 
         return E_MJSON_OK;
     }

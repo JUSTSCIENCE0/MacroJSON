@@ -17,7 +17,10 @@ TEST(ReaderTests, SimpleExampleTest) {
     doc.Parse(json_str);
 
     SimpleExample example;
-    macrojson::read_from_json(nullptr, doc, example);
+    ASSERT_EQ(
+        macrojson::read_from_json(nullptr, doc, example),
+        macrojson::MJsonErrorCode::E_MJSON_OK
+    );
 
     check_object(example, doc);
 }
@@ -38,7 +41,10 @@ TEST(ReaderTests, Level1ExampleTest) {
     doc.Parse(json_str);
 
     Level1Example example;
-    macrojson::read_from_json(nullptr, doc, example);
+    ASSERT_EQ(
+        macrojson::read_from_json(nullptr, doc, example),
+        macrojson::MJsonErrorCode::E_MJSON_OK
+    );
 
     check_object(example, doc);
 }
@@ -68,7 +74,10 @@ TEST(ReaderTests, Level2ExampleTest) {
     doc.Parse(json_str);
 
     Level2Example example;
-    macrojson::read_from_json(nullptr, doc, example);
+    ASSERT_EQ(
+        macrojson::read_from_json(nullptr, doc, example),
+        macrojson::MJsonErrorCode::E_MJSON_OK
+    );
 
     check_object(example, doc);
 }
@@ -112,7 +121,55 @@ TEST(ReaderTests, ArrayExampleTest) {
     doc.Parse(json_str);
 
     ArrayExample example;
-    macrojson::read_from_json(nullptr, doc, example);
+    ASSERT_EQ(
+        macrojson::read_from_json(nullptr, doc, example),
+        macrojson::MJsonErrorCode::E_MJSON_OK
+    );
+
+    check_object(example, doc);
+}
+
+TEST(ReaderTests, OptionalExampleTest) {
+    const char* json_str = R"({
+        "i32_opt": 99,
+        "u64_opt": 99999999999,
+        "str_opt": "Optional String",
+        "smp_opt": {
+            "i32_attr": 123,
+            "dbl_attr": 4.56,
+            "u64_attr": 65432109876,
+            "str_attr": "Optional SimpleExample"
+        },
+        "lvl1_opt": null,
+        "lvl2_opt": {
+            "u64_attr": 88888888888,
+            "smp_attr": {
+                "i32_attr": 321,
+                "dbl_attr": 6.54,
+                "u64_attr": 87654321099,
+                "str_attr": "Level2 Optional SimpleExample"
+            },
+            "lvl_attr": {
+                "i32_attr": 111,
+                "dbl_attr": 1.11,
+                "obj_attr": {
+                    "i32_attr": 222,
+                    "dbl_attr": 2.22,
+                    "u64_attr": 33333333333,
+                    "str_attr": "Level2 Optional Nested SimpleExample"
+                }
+            }
+        }
+    })";
+
+    rapidjson::Document doc;
+    doc.Parse(json_str);
+
+    OptionalExample example;
+    ASSERT_EQ(
+        macrojson::read_from_json(nullptr, doc, example),
+        macrojson::MJsonErrorCode::E_MJSON_OK
+    );
 
     check_object(example, doc);
 }

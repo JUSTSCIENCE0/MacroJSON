@@ -101,3 +101,26 @@ TEST(WriterTests, ArrayExampleTest) {
 
     check_object(example, doc);
 }
+
+TEST(WriterTests, OptionalExampleTest) {
+    OptionalExample example{
+        /* i32_opt */ 42,
+        /* dbl_opt */ std::nullopt,
+        /* u64_opt */ 1234567890ULL,
+        /* str_opt */ "Optional String",
+        /* smp_opt */ SimpleExample{1, 1.1, 111ULL, "Smp Optional"},
+        /* lvl1_opt */ std::nullopt,
+        /* lvl2_opt */ Level2Example{
+            9999999999ULL,
+            {2, 2.2, 222ULL, "Lvl2 Smp Optional"},
+            {3, 3.3, {333, 3.33, 3333ULL, "Lvl2 Lvl Optional"}}
+        }
+    };
+
+    rapidjson::Document doc;
+    doc.SetObject();
+
+    macrojson::write_to_json(nullptr, example, doc.GetAllocator(), doc);
+
+    check_object(example, doc);
+}
