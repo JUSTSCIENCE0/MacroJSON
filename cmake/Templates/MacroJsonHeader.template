@@ -11,9 +11,11 @@
 
 #include <macrojson/macrojson.hpp>
 
+#if @MJSON_DEFINE_OBJECT@
 // struct definition
-#include <macrojson/object.hpp>
-#include "@MJSON_DESCR_FILE@"
+#  include <macrojson/object.hpp>
+#  include "@MJSON_DESCR_FILE@"
+#endif
 
 // writer
 #include <macrojson/writer.hpp>

@@ -6,7 +6,14 @@
 function(macrojson_generate_header
     descr_file
     output_file
+    create_objects
 )
+    if (create_objects)
+        set(MJSON_DEFINE_OBJECT 1)
+    else()
+        set(MJSON_DEFINE_OBJECT 0)
+    endif()
+
     set(MJSON_HEADER_TEMPLATE
         ${CMAKE_CURRENT_FUNCTION_LIST_DIR}/Templates/MacroJsonHeader.template)
     set(MJSON_OUTPUT_FILE

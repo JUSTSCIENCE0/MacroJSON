@@ -10,6 +10,7 @@ project(base-demo)
 macrojson_generate_header(
     example_descr.h
     example.hpp
+    TRUE
 )
 
 add_executable(${PROJECT_NAME}

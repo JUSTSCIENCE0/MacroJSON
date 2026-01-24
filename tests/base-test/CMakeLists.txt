@@ -10,6 +10,7 @@ project(base-test)
 macrojson_generate_header(
     test_descr.h
     test_samples.hpp
+    TRUE
 )
 
 add_executable(${PROJECT_NAME}
