@@ -419,3 +419,4 @@ FodyWeavers.xsd
 
 # additional ignores
 build*/
+**/generated/
