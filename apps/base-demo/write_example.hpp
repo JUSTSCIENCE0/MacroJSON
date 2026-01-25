@@ -9,3 +9,4 @@ void simple_write_example();
 void level1_write_example();
 void level2_write_example();
 void array_write_example();
+void enum_write_example();

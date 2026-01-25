@@ -9,3 +9,4 @@ void simple_read_example();
 void level1_read_example();
 void level2_read_example();
 void array_read_example();
+void enum_read_example();

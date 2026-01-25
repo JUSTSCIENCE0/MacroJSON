@@ -5,6 +5,7 @@
 
 #include <macrojson/undef_macros.h>
 
+// struct writer macros
 #define MJSON_OBJECT_BEGIN(obj_name) \
 namespace macrojson { \
     static inline void write_to_json( \
@@ -21,5 +22,32 @@ namespace macrojson { \
         } else { \
             root = std::move(jobj); \
         } \
+    } \
+}
+
+// enum writer macros
+#define MJSON_ENUM_BEGIN(enum_name) \
+namespace macrojson { \
+    static inline void write_to_json( \
+            const char* name, enum_name jval, \
+            rapidjson::Document::AllocatorType& alloc, rapidjson::Value& root) { \
+        const char* enum_str = nullptr; \
+        switch (jval) {
+
+#define MJSON_ENUM_UNIT(name, short_name) \
+            case name: enum_str = #short_name; break;
+
+#define MJSON_ENUM_VALUE(name, short_name, value) \
+            case name: enum_str = #short_name; break;
+
+#define MJSON_ENUM_ALIAS(name, short_name, value)
+
+#define MJSON_ENUM_END(enum_name) \
+            default: \
+                assert(!"unknown enum value"); \
+                enum_str = "unknown"; break; \
+        } \
+        assert(enum_str); \
+        write_to_json(name, enum_str, alloc, root); \
     } \
 }

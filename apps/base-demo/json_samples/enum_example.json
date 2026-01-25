@@ -1,0 +1,4 @@
+{
+  "enum_attr": "TWO",
+  "enum_arr": [ "ONE", "TWO", "TWO" ]
+}

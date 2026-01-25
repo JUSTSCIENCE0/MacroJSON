@@ -118,3 +118,41 @@ static void check_object(const OptionalExample& example, const rapidjson::Value&
 
 #undef CHECK_OPTIONAL
 }
+
+static void check_object(SimpleEnum example, const rapidjson::Value& val) {
+    ASSERT_TRUE(val.IsString());
+
+    auto check_aliased_value = [](const char* str) {
+        if (!std::strcmp(str, "TWO") ||
+            !std::strcmp(str, "THREE"))
+            return true;
+        return false;
+    };
+
+    switch (example)
+    {
+    case ENUM_VALUE_ONE:
+        ASSERT_STREQ("ONE", val.GetString());
+        break;
+    case ENUM_VALUE_TWO: {
+        ASSERT_PRED1(check_aliased_value, val.GetString());
+        break;
+    }
+    default:
+        FAIL() << "Unknown enum value";
+        break;
+    }
+}
+
+static void check_object(const EnumExample& example, const rapidjson::Value& obj) {
+    ASSERT_TRUE(obj.IsObject());
+    ASSERT_TRUE(obj.HasMember("enum_attr"));
+    check_object(example.enum_attr, obj["enum_attr"]);
+    ASSERT_TRUE(obj.HasMember("enum_arr"));
+    const auto& enum_arr = obj["enum_arr"];
+    ASSERT_TRUE(enum_arr.IsArray());
+    ASSERT_EQ(example.enum_arr.size(), enum_arr.Size());
+    for (rapidjson::SizeType i = 0; i < enum_arr.Size(); ++i) {
+        check_object(example.enum_arr[i], enum_arr[i]);
+    }
+}

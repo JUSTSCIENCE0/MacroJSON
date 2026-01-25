@@ -18,6 +18,7 @@
 
 #include <fstream>
 #include <filesystem>
+#include <cassert>
 
 #define MJSON_CHECK_ERROR(code) \
     do { \
@@ -36,7 +37,8 @@ namespace macrojson {
         E_MJSON_NOT_EXISTS,
         E_MJSON_TYPE_MISMATCH,
         E_MJSON_FILE_ERROR,
-        E_MJSON_PARSE_FAILED
+        E_MJSON_PARSE_FAILED,
+        E_MJSON_UNKNOWN_ENUM
     };
 
     template <typename T>

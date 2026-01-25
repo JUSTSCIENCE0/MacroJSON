@@ -173,3 +173,18 @@ TEST(ReaderTests, OptionalExampleTest) {
 
     check_object(example, doc);
 }
+
+TEST(ReaderTests, EnumExampleTest) {
+    const char* json_str = R"({
+        "enum_attr": "TWO",
+        "enum_arr": ["ONE", "TWO", "THREE", "TWO"]
+    })";
+    rapidjson::Document doc;
+    doc.Parse(json_str);
+    EnumExample example;
+    ASSERT_EQ(
+        macrojson::read_from_json(nullptr, doc, example),
+        macrojson::MJsonErrorCode::E_MJSON_OK
+    );
+    check_object(example, doc);
+}

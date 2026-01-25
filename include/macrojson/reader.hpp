@@ -5,6 +5,7 @@
 
 #include <macrojson/undef_macros.h>
 
+// struct reader macros
 #define MJSON_OBJECT_BEGIN(obj_name) \
 namespace macrojson { \
     static inline MJsonErrorCode read_from_json( \
@@ -23,5 +24,37 @@ namespace macrojson { \
 
 #define MJSON_OBJECT_END(obj_name) \
         return MJsonErrorCode::E_MJSON_OK; \
+    } \
+}
+
+// enum reader macros
+#define MJSON_ENUM_BEGIN(enum_name) \
+namespace macrojson { \
+    static inline MJsonErrorCode read_from_json( \
+            const char* name, const rapidjson::Value& root, enum_name& val) { \
+        if (name && !root.HasMember(name)) { \
+            return MJsonErrorCode::E_MJSON_NOT_EXISTS; \
+        } \
+        const rapidjson::Value& jval = name ? root[name] : root; \
+        if (!jval.IsString()) { \
+            return MJsonErrorCode::E_MJSON_TYPE_MISMATCH; \
+        } \
+        const char* enum_str = jval.GetString();
+
+#define MJSON_ENUM_UNIT(name, short_name) \
+        if (std::strcmp(enum_str, #short_name) == 0) { \
+            val = name; \
+            return MJsonErrorCode::E_MJSON_OK; \
+        }
+
+#define MJSON_ENUM_VALUE(name, short_name, value) \
+            MJSON_ENUM_UNIT(name, short_name)
+
+#define MJSON_ENUM_ALIAS(name, short_name, value) \
+            MJSON_ENUM_UNIT(name, short_name)
+
+#define MJSON_ENUM_END(enum_name) \
+        assert(!"unknown enum value"); \
+        return MJsonErrorCode::E_MJSON_UNKNOWN_ENUM; \
     } \
 }
