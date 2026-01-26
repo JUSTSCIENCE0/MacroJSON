@@ -52,3 +52,28 @@ MJSON_OBJECT_BEGIN(EnumExample)
     MJSON_FIELD(SimpleEnum,              enum_attr)
     MJSON_FIELD(std::vector<SimpleEnum>, enum_arr)
 MJSON_OBJECT_END(EnumExample)
+
+/*
+polymorphic object draft
+
+#define MJSON_BASE_OBJECT_NAME ...
+MJSON_POLYMORPHIC_OBJECT_BEGIN()
+    MJSON_BASE_OBJECT_BEGIN(types_enum)
+        MJSON_POLYMORPHIC_FIELD(...)
+        ...
+    MJSON_BASE_OBJECT_END()
+    MJSON_DERIVED_OBJECT_BEGIN(obj_name, type_enumerator)
+        MJSON_POLYMORPHIC_FIELD(...)
+        MJSON_POLYMORPHIC_FIELD(...)
+        ...
+    MJSON_DERIVED_OBJECT_END(obj_name)
+    MJSON_DERIVED_OBJECT_BEGIN(obj_name, type_enumerator)
+        MJSON_POLYMORPHIC_FIELD(...)
+        MJSON_POLYMORPHIC_FIELD(...)
+        ...
+    MJSON_DERIVED_OBJECT_END(obj_name)
+    ...
+MJSON_POLYMORPHIC_OBJECT_END()
+#undef MJSON_BASE_OBJECT_NAME
+
+*/
