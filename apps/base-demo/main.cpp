@@ -12,6 +12,7 @@ int main() {
     level2_write_example();
     array_write_example();
     enum_write_example();
+    polymorphic_write_example();
 
     simple_read_example();
     level1_read_example();

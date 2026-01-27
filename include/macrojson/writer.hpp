@@ -51,3 +51,24 @@ namespace macrojson { \
         write_to_json(name, enum_str, alloc, root); \
     } \
 }
+
+// polymorphic object macros
+#define MJSON_POLYMORPHIC_OBJECT_BEGIN() \
+namespace macrojson { \
+    static inline void write_to_json( \
+        const char* /*name*/, const std::unique_ptr<MJSON_BASE_OBJECT_NAME>& /*jval*/, \
+        rapidjson::Document::AllocatorType& /*alloc*/, rapidjson::Value& /*root*/) { \
+
+#define MJSON_BASE_OBJECT_BEGIN(types_enum)
+
+#define MJSON_BASE_OBJECT_END()
+
+#define MJSON_DERIVED_OBJECT_BEGIN(obj_name, type_enumerator)
+
+#define MJSON_DERIVED_OBJECT_END(obj_name)
+
+#define MJSON_POLYMORPHIC_FIELD(type, field, ...)
+
+#define MJSON_POLYMORPHIC_OBJECT_END() \
+    } \
+}

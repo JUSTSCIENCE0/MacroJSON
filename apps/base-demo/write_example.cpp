@@ -136,3 +136,16 @@ void enum_write_example() {
     std::cout << json << std::endl;
     std::cout << std::endl;
 }
+
+void polymorphic_write_example() {
+    std::unique_ptr<BaseExample> example1 = std::make_unique<Object1Example>();
+    auto e1_ptr = static_cast<Object1Example*>(example1.get());
+    e1_ptr->i32_attr = 123;
+    e1_ptr->flt_attr = 4.56f;
+    e1_ptr->u64_attr = 7890123456789012345ULL;
+    e1_ptr->dbl_attr = 7.89;
+
+    rapidjson::Document doc;
+    doc.SetObject();
+    macrojson::write_to_json(nullptr, example1, doc.GetAllocator(), doc);
+}
