@@ -38,6 +38,9 @@
     struct MJSON_BASE_OBJECT_NAME { \
         types_enum type{};
 
+#define MJSON_BASE_OBJECT_FIELD(type, field, ...) \
+        type field{};
+
 #define MJSON_BASE_OBJECT_END() \
     };
 
@@ -45,11 +48,11 @@
     struct obj_name : public MJSON_BASE_OBJECT_NAME { \
         obj_name() { type = type_enumerator; }
 
+#define MJSON_DERIVED_OBJECT_FIELD(type, field, ...) \
+        type field{};
+
 #define MJSON_DERIVED_OBJECT_END(obj_name) \
     };
-
-#define MJSON_POLYMORPHIC_FIELD(type, field, ...) \
-        type field{};
 
 #define MJSON_POLYMORPHIC_OBJECT_END()
 

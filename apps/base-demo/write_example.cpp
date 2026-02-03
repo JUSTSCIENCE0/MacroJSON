@@ -147,5 +147,5 @@ void polymorphic_write_example() {
 
     rapidjson::Document doc;
     doc.SetObject();
-    macrojson::write_to_json(nullptr, example1, doc.GetAllocator(), doc);
+    macrojson::write_to_json(nullptr, example1.get(), doc.GetAllocator(), doc);
 }

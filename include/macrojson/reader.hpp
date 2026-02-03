@@ -64,12 +64,14 @@ namespace macrojson { \
 
 #define MJSON_BASE_OBJECT_BEGIN(types_enum)
 
+#define MJSON_BASE_OBJECT_FIELD(type, field, ...)
+
 #define MJSON_BASE_OBJECT_END()
 
 #define MJSON_DERIVED_OBJECT_BEGIN(obj_name, type_enumerator)
 
-#define MJSON_DERIVED_OBJECT_END(obj_name)
+#define MJSON_DERIVED_OBJECT_FIELD(type, field, ...)
 
-#define MJSON_POLYMORPHIC_FIELD(type, field, ...)
+#define MJSON_DERIVED_OBJECT_END(obj_name)
 
 #define MJSON_POLYMORPHIC_OBJECT_END()
