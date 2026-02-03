@@ -76,12 +76,14 @@ add_library(MacroJSON INTERFACE)
 
 target_sources(MacroJSON
     PRIVATE
-        include/macrojson/macrojson.hpp
+        include/macrojson/fundamental.hpp
+        include/macrojson/aggregative.hpp
         include/macrojson/object.hpp
         include/macrojson/reader.hpp
         include/macrojson/schema.hpp
         include/macrojson/writer.hpp
         include/macrojson/undef_macros.h
+        include/macrojson/helpers.hpp
 )
 
 target_include_directories(MacroJSON

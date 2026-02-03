@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include <macrojson/macrojson.hpp>
+#include <macrojson/fundamental.hpp>
 
 #if @MJSON_DEFINE_OBJECT@
 // struct definition
@@ -28,3 +28,6 @@
 // validator - TODO
 
 // schema - TODO
+
+#include <macrojson/aggregative.hpp>
+#include <macrojson/helpers.hpp>
