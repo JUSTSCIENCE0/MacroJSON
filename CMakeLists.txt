@@ -33,6 +33,7 @@ if (PROJECT_IS_TOP_LEVEL)
             -Wredundant-decls -Wshadow -Wsign-promo 
             -Wundef -Wno-variadic-macros
             -Wno-parentheses -fdiagnostics-show-option
+            -Wno-gnu-zero-variadic-macro-arguments -Wno-unused-function
             -Werror
         )
     endif() # GCC & Clang
