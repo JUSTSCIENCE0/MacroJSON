@@ -60,18 +60,46 @@ namespace macrojson { \
 }
 
 // polymorphic object macros
-#define MJSON_POLYMORPHIC_OBJECT_BEGIN()
+#define MJSON_POLYMORPHIC_OBJECT_BEGIN() \
+namespace macrojson { \
+    static inline MJsonErrorCode read_from_json( \
+            const char* name, const rapidjson::Value& root, std::unique_ptr<MJSON_BASE_OBJECT_NAME>& val) { \
+        val.reset(); \
+        if (name && !root.HasMember(name)) { \
+            return MJsonErrorCode::E_MJSON_NOT_EXISTS; \
+        } \
+        const rapidjson::Value& obj = name ? root[name] : root; \
+        if (!obj.IsObject()) { \
+            return MJsonErrorCode::E_MJSON_TYPE_MISMATCH; \
+        } \
 
-#define MJSON_BASE_OBJECT_BEGIN(types_enum)
+#define MJSON_BASE_OBJECT_BEGIN(types_enum) \
+        MJSON_BASE_OBJECT_NAME base_obj{}; \
+        MJSON_CHECK_ERROR(read_from_json("type", obj, base_obj.type));
 
-#define MJSON_BASE_OBJECT_FIELD(type, field, ...)
+#define MJSON_BASE_OBJECT_FIELD(type, field, ...) \
+        MJSON_CHECK_ERROR(read_from_json(#field, obj, base_obj.field));
 
-#define MJSON_BASE_OBJECT_END()
+#define MJSON_BASE_OBJECT_END() \
+        switch (base_obj.type) {
 
-#define MJSON_DERIVED_OBJECT_BEGIN(obj_name, type_enumerator)
+#define MJSON_DERIVED_OBJECT_BEGIN(obj_name, type_enumerator) \
+        case type_enumerator: { \
+            val = std::make_unique<obj_name>(); \
+            auto obj_ptr = static_cast<obj_name*>(val.get());
 
-#define MJSON_DERIVED_OBJECT_FIELD(type, field, ...)
+#define MJSON_DERIVED_OBJECT_FIELD(type, field, ...) \
+            MJSON_CHECK_ERROR(read_from_json(#field, obj, obj_ptr->field));
 
-#define MJSON_DERIVED_OBJECT_END(obj_name)
+#define MJSON_DERIVED_OBJECT_END(obj_name) \
+            break; \
+        }
 
-#define MJSON_POLYMORPHIC_OBJECT_END()
+#define MJSON_POLYMORPHIC_OBJECT_END() \
+        default: \
+            return MJsonErrorCode::E_MJSON_UNSUPPORTED_OBJECT_TYPE;\
+        } \
+        *val = base_obj; \
+        return MJsonErrorCode::E_MJSON_OK; \
+    } \
+}

@@ -19,5 +19,6 @@ int main() {
     level2_read_example();
     array_read_example();
     enum_read_example();
+    polymorphic_read_example();
     return 0;
 }

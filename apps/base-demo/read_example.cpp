@@ -123,3 +123,43 @@ void enum_read_example() {
     std::cout << "enum_arr size = " << example.enum_arr.size() << std::endl;
     std::cout << std::endl;
 }
+
+void polymorphic_read_example() {
+    std::unique_ptr<BaseExample> example1{};
+    std::string error_descr{};
+    auto code = macrojson::json_file_to_object(JSON_EXAMPLES_DIRECTORY "object1_example.json", example1, error_descr);
+    if (code != macrojson::MJsonErrorCode::E_MJSON_OK) {
+        std::cerr << "Error reading Object1Example from JSON." << std::endl;
+        if (!error_descr.empty()) {
+            std::cerr << error_descr << std::endl;
+        }
+        return;
+    }
+
+    auto o1 = static_cast<Object1Example*>(example1.get());
+    std::cout << "polymorphic_read_example" << std::endl;
+    std::cout << "Deserialized Object1Example JSON (part):" << std::endl;
+    std::cout << "i32_attr = " << o1->i32_attr << std::endl;
+    std::cout << "flt_attr = " << o1->flt_attr << std::endl;
+    std::cout << "u64_attr = " << o1->u64_attr << std::endl;
+    std::cout << "dbl_attr = " << o1->dbl_attr << std::endl;
+    std::cout << std::endl;
+
+    std::shared_ptr<BaseExample> example2{};
+    code = macrojson::json_file_to_object(JSON_EXAMPLES_DIRECTORY "object2_example.json", example2, error_descr);
+    if (code != macrojson::MJsonErrorCode::E_MJSON_OK) {
+        std::cerr << "Error reading Object2Example from JSON." << std::endl;
+        if (!error_descr.empty()) {
+            std::cerr << error_descr << std::endl;
+        }
+        return;
+    }
+
+    auto o2 = static_cast<Object2Example*>(example2.get());
+    std::cout << "polymorphic_read_example" << std::endl;
+    std::cout << "Deserialized Object2Example JSON (part):" << std::endl;
+    std::cout << "i32_attr = " << o2->i32_attr << std::endl;
+    std::cout << "flt_attr = " << o2->flt_attr << std::endl;
+    std::cout << "str_attr = " << o2->str_attr << std::endl;
+    std::cout << std::endl;
+}

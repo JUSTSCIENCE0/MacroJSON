@@ -86,6 +86,17 @@ namespace macrojson {
         return E_MJSON_OK;
     }
 
+    template<typename T>
+    MJsonErrorCode read_from_json(const char* name, const Value& root, std::shared_ptr<T>& val) {
+        val.reset();
+
+        std::unique_ptr<T> tmp{};
+        MJSON_CHECK_ERROR(read_from_json(name, root, tmp));
+
+        val = std::move(tmp);
+        return E_MJSON_OK;
+    }
+
     // Aggregative types validators
     // TODO
 
