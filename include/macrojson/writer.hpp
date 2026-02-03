@@ -58,6 +58,7 @@ namespace macrojson { \
     static inline void write_to_json( \
             const char* name, const MJSON_BASE_OBJECT_NAME* val_ptr, \
             rapidjson::Document::AllocatorType& alloc, rapidjson::Value& root) { \
+        assert(val_ptr); \
         rapidjson::Value jobj(rapidjson::kObjectType);
 
 #define MJSON_BASE_OBJECT_BEGIN(types_enum) \
