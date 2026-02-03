@@ -3,6 +3,10 @@
 //
 // License: MIT
 
+#ifdef WIN32
+# define _CRT_SECURE_NO_WARNINGS
+#endif
+
 #include "rapidjson/filereadstream.h"
 
 #include "example.hpp"
@@ -11,11 +15,9 @@
 #include <iostream>
 
 static inline bool read_json_from_file(const char* json_file, rapidjson::Document& doc) {
-    FILE* fp = nullptr;
-    auto err_code = fopen_s(&fp, json_file, "rb");
-    if (err_code || !fp) {
+    FILE* fp = fopen(json_file, "rb");
+    if (!fp) {
         std::cerr << "Could not open file: " << json_file << std::endl;
-        std::cerr << "Error code: " << err_code << std::endl;
         return false;
     }
     char readBuffer[1024];

@@ -31,7 +31,7 @@ if (PROJECT_IS_TOP_LEVEL)
             -Wdisabled-optimization -Wformat=2 -Winit-self 
             -Wmissing-include-dirs -Wold-style-cast -Woverloaded-virtual
             -Wredundant-decls -Wshadow -Wsign-promo 
-            -Wstrict-overflow=5 -Wundef -Wno-variadic-macros
+            -Wundef -Wno-variadic-macros
             -Wno-parentheses -fdiagnostics-show-option
             -Werror
         )
