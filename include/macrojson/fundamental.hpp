@@ -15,6 +15,7 @@
 #include <string>
 #include <vector>
 #include <optional>
+#include <memory>
 
 #include <fstream>
 #include <filesystem>
@@ -81,11 +82,19 @@ namespace macrojson {
 
     template<typename T>
     void write_to_json(
-            const char* name, std::optional<T> val, Document::AllocatorType& alloc, Value& root);
+            const char* name, const std::optional<T>& val, Document::AllocatorType& alloc, Value& root);
 
     template<typename T>
     void write_to_json(
-            const char* name, std::vector<T> val, Document::AllocatorType& alloc, Value& root);
+            const char* name, const std::vector<T>& val, Document::AllocatorType& alloc, Value& root);
+
+    template<typename T>
+    void write_to_json(
+            const char* name, const std::unique_ptr<T>& val, Document::AllocatorType& alloc, Value& root);
+
+    template<typename T>
+    void write_to_json(
+            const char* name, const std::shared_ptr<T>& val, Document::AllocatorType& alloc, Value& root);
 
     // Fundamental types readers
 #define JSON_READER(type, checker, getter) \

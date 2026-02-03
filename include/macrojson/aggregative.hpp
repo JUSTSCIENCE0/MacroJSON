@@ -11,7 +11,7 @@ namespace macrojson {
     // Aggregative types writers
     template<typename T>
     void write_to_json(
-            const char* name, std::optional<T> val, Document::AllocatorType& alloc, Value& root) {
+            const char* name, const std::optional<T>& val, Document::AllocatorType& alloc, Value& root) {
         if (val.has_value()) {
             write_to_json(name, val.value(), alloc, root);
         }
@@ -19,7 +19,7 @@ namespace macrojson {
 
     template<typename T>
     void write_to_json(
-            const char* name, std::vector<T> val, Document::AllocatorType& alloc, Value& root) {
+            const char* name, const std::vector<T>& val, Document::AllocatorType& alloc, Value& root) {
         Value jarr(kArrayType);
         for (const auto& item : val) {
             Value jval;
@@ -27,6 +27,18 @@ namespace macrojson {
             jarr.PushBack(jval, alloc);
         }
         write_to_json(name, std::move(jarr), alloc, root);
+    }
+
+    template<typename T>
+    void write_to_json(
+            const char* name, const std::unique_ptr<T>& val, Document::AllocatorType& alloc, Value& root) {
+        write_to_json(name, val.get(), alloc, root);
+    }
+
+    template<typename T>
+    void write_to_json(
+            const char* name, const std::shared_ptr<T>& val, Document::AllocatorType& alloc, Value& root) {
+        write_to_json(name, val.get(), alloc, root);
     }
 
     // Aggregative types readers
