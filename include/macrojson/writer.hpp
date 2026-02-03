@@ -56,21 +56,39 @@ namespace macrojson { \
 #define MJSON_POLYMORPHIC_OBJECT_BEGIN() \
 namespace macrojson { \
     static inline void write_to_json( \
-        const char* /*name*/, const MJSON_BASE_OBJECT_NAME* /*jval*/, \
-        rapidjson::Document::AllocatorType& /*alloc*/, rapidjson::Value& /*root*/) { \
+            const char* name, const MJSON_BASE_OBJECT_NAME* val_ptr, \
+            rapidjson::Document::AllocatorType& alloc, rapidjson::Value& root) { \
+        rapidjson::Value jobj(rapidjson::kObjectType);
 
-#define MJSON_BASE_OBJECT_BEGIN(types_enum)
+#define MJSON_BASE_OBJECT_BEGIN(types_enum) \
+        write_to_json("type", val_ptr->type, alloc, jobj);
 
-#define MJSON_BASE_OBJECT_FIELD(type, field, ...)
+#define MJSON_BASE_OBJECT_FIELD(type, field, ...) \
+        write_to_json(#field, val_ptr->field, alloc, jobj);
 
-#define MJSON_BASE_OBJECT_END()
+#define MJSON_BASE_OBJECT_END() \
+        switch (val_ptr->type) {
 
-#define MJSON_DERIVED_OBJECT_BEGIN(obj_name, type_enumerator)
+#define MJSON_DERIVED_OBJECT_BEGIN(obj_name, type_enumerator) \
+        case type_enumerator: { \
+            auto obj_ptr = static_cast<const obj_name*>(val_ptr);
 
-#define MJSON_DERIVED_OBJECT_FIELD(type, field, ...)
+#define MJSON_DERIVED_OBJECT_FIELD(type, field, ...) \
+            write_to_json(#field, obj_ptr->field, alloc, jobj);
 
-#define MJSON_DERIVED_OBJECT_END(obj_name)
+#define MJSON_DERIVED_OBJECT_END(obj_name) \
+            break; \
+        }
 
 #define MJSON_POLYMORPHIC_OBJECT_END() \
+        default: \
+            assert(!"undefined behavior"); \
+            break; \
+        } \
+        if (name) { \
+            write_to_json(name, std::move(jobj), alloc, root); \
+        } else { \
+            root = std::move(jobj); \
+        } \
     } \
 }

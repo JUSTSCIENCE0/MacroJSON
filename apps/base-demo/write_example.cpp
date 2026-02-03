@@ -144,8 +144,22 @@ void polymorphic_write_example() {
     e1_ptr->flt_attr = 4.56f;
     e1_ptr->u64_attr = 7890123456789012345ULL;
     e1_ptr->dbl_attr = 7.89;
+    std::string json1{};
+    macrojson::object_to_json_str(example1, json1);
+    std::cout << "polymorphic_write_example" << std::endl;
+    std::cout << "Serialized JSON 1:" << std::endl;
+    std::cout << json1 << std::endl;
+    std::cout << std::endl;
 
-    rapidjson::Document doc;
-    doc.SetObject();
-    macrojson::write_to_json(nullptr, example1.get(), doc.GetAllocator(), doc);
+    std::unique_ptr<BaseExample> example2 = std::make_unique<Object2Example>();
+    auto e2_ptr = static_cast<Object2Example*>(example2.get());
+    e2_ptr->i32_attr = 123;
+    e2_ptr->flt_attr = 4.56f;
+    e2_ptr->str_attr = "example 2";
+    std::string json2{};
+    macrojson::object_to_json_str(example2, json2);
+    std::cout << "polymorphic_write_example" << std::endl;
+    std::cout << "Serialized JSON 2:" << std::endl;
+    std::cout << json2 << std::endl;
+    std::cout << std::endl;
 }
