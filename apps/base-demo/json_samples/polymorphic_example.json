@@ -1,0 +1,24 @@
+{
+  "plm_attr": {
+    "type": "object1",
+    "i32_attr": 321,
+    "flt_attr": 6.539999961853027,
+    "u64_attr": 5432109876543210987,
+    "dbl_attr": 9.87
+  },
+  "plm_arr": [
+    {
+      "type": "object1",
+      "i32_attr": 111,
+      "flt_attr": 1.1100000143051147,
+      "u64_attr": 1111111111111111111,
+      "dbl_attr": 1.11
+    },
+    {
+      "type": "object2",
+      "i32_attr": 222,
+      "flt_attr": 2.2200000286102295,
+      "str_attr": "example in array"
+    }
+  ]
+}

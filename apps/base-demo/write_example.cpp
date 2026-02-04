@@ -137,7 +137,7 @@ void enum_write_example() {
     std::cout << std::endl;
 }
 
-void polymorphic_write_example() {
+void polymorphic_simple_write_example() {
     std::unique_ptr<BaseExample> example1 = std::make_unique<Object1Example>();
     auto e1_ptr = static_cast<Object1Example*>(example1.get());
     e1_ptr->i32_attr = 123;
@@ -146,7 +146,7 @@ void polymorphic_write_example() {
     e1_ptr->dbl_attr = 7.89;
     std::string json1{};
     macrojson::object_to_json_str(example1, json1);
-    std::cout << "polymorphic_write_example" << std::endl;
+    std::cout << "polymorphic_simple_write_example" << std::endl;
     std::cout << "Serialized JSON 1:" << std::endl;
     std::cout << json1 << std::endl;
     std::cout << std::endl;
@@ -158,8 +158,37 @@ void polymorphic_write_example() {
     e2_ptr->str_attr = "example 2";
     std::string json2{};
     macrojson::object_to_json_str(example2, json2);
-    std::cout << "polymorphic_write_example" << std::endl;
     std::cout << "Serialized JSON 2:" << std::endl;
     std::cout << json2 << std::endl;
+    std::cout << std::endl;
+}
+
+void polymorphic_complex_write_example() {
+    PolymorphicExample example{};
+    example.plm_attr = std::make_unique<Object1Example>();
+    auto e1_ptr = static_cast<Object1Example*>(example.plm_attr.get());
+    e1_ptr->i32_attr = 321;
+    e1_ptr->flt_attr = 6.54f;
+    e1_ptr->u64_attr = 5432109876543210987ULL;
+    e1_ptr->dbl_attr = 9.87;
+
+    example.plm_arr.push_back(std::make_unique<Object1Example>());
+    e1_ptr = static_cast<Object1Example*>(example.plm_arr.back().get());
+    e1_ptr->i32_attr = 111;
+    e1_ptr->flt_attr = 1.11f;
+    e1_ptr->u64_attr = 1111111111111111111ULL;
+    e1_ptr->dbl_attr = 1.11;
+
+    example.plm_arr.push_back(std::make_unique<Object2Example>());
+    auto e2_ptr = static_cast<Object2Example*>(example.plm_arr.back().get());
+    e2_ptr->i32_attr = 222;
+    e2_ptr->flt_attr = 2.22f;
+    e2_ptr->str_attr = "example in array";
+
+    std::string json{};
+    macrojson::object_to_json_str(example, json);
+    std::cout << "polymorphic_complex_write_example" << std::endl;
+    std::cout << "Serialized JSON:" << std::endl;
+    std::cout << json << std::endl;
     std::cout << std::endl;
 }

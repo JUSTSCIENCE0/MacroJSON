@@ -63,3 +63,9 @@ MJSON_POLYMORPHIC_OBJECT_BEGIN()
     MJSON_DERIVED_OBJECT_END(Object2Example)
 MJSON_POLYMORPHIC_OBJECT_END()
 #undef MJSON_BASE_OBJECT_NAME
+
+MJSON_OBJECT_BEGIN(PolymorphicExample)
+    MJSON_FIELD(std::unique_ptr<BaseExample>, plm_attr)
+    MJSON_FIELD(std::vector<
+        std::unique_ptr<BaseExample>>, plm_arr)
+MJSON_OBJECT_END(PolymorphicExample)

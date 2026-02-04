@@ -124,7 +124,24 @@ void enum_read_example() {
     std::cout << std::endl;
 }
 
-void polymorphic_read_example() {
+void print(const Object1Example& o1) {
+    std::cout << "Deserialized Object1Example JSON:" << std::endl;
+    std::cout << "\ti32_attr = " << o1.i32_attr << std::endl;
+    std::cout << "\tflt_attr = " << o1.flt_attr << std::endl;
+    std::cout << "\tu64_attr = " << o1.u64_attr << std::endl;
+    std::cout << "\tdbl_attr = " << o1.dbl_attr << std::endl;
+}
+
+void print(const Object2Example& o2) {
+    std::cout << "Deserialized Object2Example JSON:" << std::endl;
+    std::cout << "\ti32_attr = " << o2.i32_attr << std::endl;
+    std::cout << "\tflt_attr = " << o2.flt_attr << std::endl;
+    std::cout << "\tstr_attr = " << o2.str_attr << std::endl;
+}
+
+void polymorphic_simple_read_example() {
+    std::cout << "polymorphic_simple_read_example" << std::endl;
+
     std::unique_ptr<BaseExample> example1{};
     std::string error_descr{};
     auto code = macrojson::json_file_to_object(JSON_EXAMPLES_DIRECTORY "object1_example.json", example1, error_descr);
@@ -135,15 +152,7 @@ void polymorphic_read_example() {
         }
         return;
     }
-
-    auto o1 = static_cast<Object1Example*>(example1.get());
-    std::cout << "polymorphic_read_example" << std::endl;
-    std::cout << "Deserialized Object1Example JSON (part):" << std::endl;
-    std::cout << "i32_attr = " << o1->i32_attr << std::endl;
-    std::cout << "flt_attr = " << o1->flt_attr << std::endl;
-    std::cout << "u64_attr = " << o1->u64_attr << std::endl;
-    std::cout << "dbl_attr = " << o1->dbl_attr << std::endl;
-    std::cout << std::endl;
+    print(static_cast<Object1Example&>(*example1));
 
     std::shared_ptr<BaseExample> example2{};
     code = macrojson::json_file_to_object(JSON_EXAMPLES_DIRECTORY "object2_example.json", example2, error_descr);
@@ -154,12 +163,51 @@ void polymorphic_read_example() {
         }
         return;
     }
+    print(static_cast<Object2Example&>(*example2));
+    std::cout << std::endl;
+}
 
-    auto o2 = static_cast<Object2Example*>(example2.get());
-    std::cout << "polymorphic_read_example" << std::endl;
-    std::cout << "Deserialized Object2Example JSON (part):" << std::endl;
-    std::cout << "i32_attr = " << o2->i32_attr << std::endl;
-    std::cout << "flt_attr = " << o2->flt_attr << std::endl;
-    std::cout << "str_attr = " << o2->str_attr << std::endl;
+void print(const BaseExample& base) {
+    switch (base.type) {
+    case EnumTypesExample::E_TYPE_OBJECT_1: {
+        auto& obj1 = static_cast<const Object1Example&>(base);
+        print(obj1);
+        break;
+    }
+    case EnumTypesExample::E_TYPE_OBJECT_2: {
+        auto& obj2 = static_cast<const Object2Example&>(base);
+        print(obj2);
+        break;
+    }
+    default:
+        std::cout << "Unknown plm_attr type." << std::endl;
+        break;
+    }
+}
+
+void polymorphic_complex_read_example() {
+    PolymorphicExample example{};
+    std::string error_descr{};
+    auto code = macrojson::json_file_to_object(JSON_EXAMPLES_DIRECTORY "polymorphic_example.json", example, error_descr);
+    if (code != macrojson::MJsonErrorCode::E_MJSON_OK) {
+        std::cerr << "Error reading PolymorphicExample from JSON." << std::endl;
+        if (!error_descr.empty()) {
+            std::cerr << error_descr << std::endl;
+        }
+        return;
+    }
+
+    std::cout << "polymorphic_complex_read_example" << std::endl;
+    std::cout << "Deserialized JSON:" << std::endl;
+    if (example.plm_attr) {
+        std::cout << "plm_attr: " << std::endl;
+        print(*example.plm_attr);
+    }
+
+    std::cout << "plm_arr size = " << example.plm_arr.size() << std::endl;
+    std::cout << "plm_arr: " << std::endl;
+    for (const auto& item : example.plm_arr) {
+        print(*item);
+    }
     std::cout << std::endl;
 }
