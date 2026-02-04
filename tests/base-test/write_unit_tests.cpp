@@ -135,3 +135,28 @@ TEST(WriterTests, EnumExampleTest) {
     macrojson::write_to_json(nullptr, example, doc.GetAllocator(), doc);
     check_object(example, doc);
 }
+
+TEST(WriterTests, PolymorphicExampleTest) {
+    std::unique_ptr<BaseExample> example1 =
+        std::make_unique<Object1Example>();
+    auto& obj1 = static_cast<Object1Example&>(*example1);
+    obj1.i32_attr = 10;
+    obj1.flt_attr = 1.5f;
+    obj1.u64_attr = 100ULL;
+    obj1.dbl_attr = 2.5;
+    rapidjson::Document doc1;
+    doc1.SetObject();
+    macrojson::write_to_json(nullptr, example1, doc1.GetAllocator(), doc1);
+    check_object(obj1, doc1);
+
+    std::shared_ptr<BaseExample> example2 =
+        std::make_shared<Object2Example>();
+    auto& obj2 = static_cast<Object2Example&>(*example2);
+    obj2.i32_attr = 20;
+    obj2.flt_attr = 2.5f;
+    obj2.str_attr = "Polymorphic Object 2";
+    rapidjson::Document doc2;
+    doc2.SetObject();
+    macrojson::write_to_json(nullptr, example2, doc2.GetAllocator(), doc2);
+    check_object(obj2, doc2);
+}

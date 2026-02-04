@@ -156,3 +156,52 @@ static void check_object(const EnumExample& example, const rapidjson::Value& obj
         check_object(example.enum_arr[i], enum_arr[i]);
     }
 }
+
+static void check_object(EnumTypesExample example, const rapidjson::Value& obj) {
+    ASSERT_TRUE(obj.IsString());
+
+    switch (example) {
+    case E_TYPE_OBJECT_1:
+        ASSERT_STREQ("object1", obj.GetString());
+        break;
+    case E_TYPE_OBJECT_2:
+        ASSERT_STREQ("object2", obj.GetString());
+        break;
+    default:
+        FAIL() << "Unknown enum value";
+        break;
+    }
+}
+
+static void check_object(const BaseExample& example, const rapidjson::Value& obj) {
+    ASSERT_TRUE(obj.IsObject());
+    ASSERT_TRUE(obj.HasMember("type"));
+    check_object(example.type, obj["type"]);
+    ASSERT_TRUE(obj.HasMember("i32_attr"));
+    ASSERT_TRUE(obj["i32_attr"].IsInt());
+    EXPECT_EQ(example.i32_attr, obj["i32_attr"].GetInt());
+    ASSERT_TRUE(obj.HasMember("flt_attr"));
+    ASSERT_TRUE(obj["flt_attr"].IsFloat());
+    EXPECT_FLOAT_EQ(example.flt_attr, obj["flt_attr"].GetFloat());
+}
+
+static void check_object(const Object1Example& example, const rapidjson::Value& obj) {
+    ASSERT_TRUE(obj.IsObject());
+    check_object(static_cast<const BaseExample&>(example), obj);
+    ASSERT_EQ(example.type, E_TYPE_OBJECT_1);
+    ASSERT_TRUE(obj.HasMember("u64_attr"));
+    ASSERT_TRUE(obj["u64_attr"].IsUint64());
+    EXPECT_EQ(example.u64_attr, obj["u64_attr"].GetUint64());
+    ASSERT_TRUE(obj.HasMember("dbl_attr"));
+    ASSERT_TRUE(obj["dbl_attr"].IsDouble());
+    EXPECT_DOUBLE_EQ(example.dbl_attr, obj["dbl_attr"].GetDouble());
+}
+
+static void check_object(const Object2Example& example, const rapidjson::Value& obj) {
+    ASSERT_TRUE(obj.IsObject());
+    check_object(static_cast<const BaseExample&>(example), obj);
+    ASSERT_EQ(example.type, E_TYPE_OBJECT_2);
+    ASSERT_TRUE(obj.HasMember("str_attr"));
+    ASSERT_TRUE(obj["str_attr"].IsString());
+    EXPECT_EQ(example.str_attr, obj["str_attr"].GetString());
+}

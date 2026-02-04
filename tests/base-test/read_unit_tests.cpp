@@ -188,3 +188,36 @@ TEST(ReaderTests, EnumExampleTest) {
     );
     check_object(example, doc);
 }
+
+TEST(ReaderTests, PolymorphicExampleTest) {
+    const char* json_str1 = R"({
+        "type": "object1",
+        "i32_attr": 123,
+        "flt_attr": 4.559999942779541,
+        "u64_attr": 7890123456789012345,
+        "dbl_attr": 7.89
+    })";
+    rapidjson::Document doc1;
+    doc1.Parse(json_str1);
+    std::unique_ptr<BaseExample> example1{};
+    ASSERT_EQ(
+        macrojson::read_from_json(nullptr, doc1, example1),
+        macrojson::MJsonErrorCode::E_MJSON_OK
+    );
+    check_object(static_cast<Object1Example&>(*example1), doc1);
+
+    const char* json_str2 = R"({
+        "type": "object2",
+        "i32_attr": 123,
+        "flt_attr": 4.559999942779541,
+        "str_attr": "example 2"
+    })";
+    rapidjson::Document doc2;
+    doc2.Parse(json_str2);
+    std::shared_ptr<BaseExample> example2{};
+    ASSERT_EQ(
+        macrojson::read_from_json(nullptr, doc2, example2),
+        macrojson::MJsonErrorCode::E_MJSON_OK
+    );
+    check_object(static_cast<Object2Example&>(*example2), doc2);
+}
