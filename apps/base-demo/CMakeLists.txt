@@ -17,6 +17,8 @@ add_executable(${PROJECT_NAME}
     example_descr.h
     generated/example.hpp
 
+    schema_example.cpp
+    schema_example.hpp
     write_example.cpp
     write_example.hpp
     read_example.cpp

@@ -3,10 +3,13 @@
 //
 // License: MIT
 
+#include "schema_example.hpp"
 #include "write_example.hpp"
 #include "read_example.hpp"
 
 int main() {
+    simple_schema_example();
+
     simple_write_example();
     level1_write_example();
     level2_write_example();
