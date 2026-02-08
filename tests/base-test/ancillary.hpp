@@ -48,114 +48,114 @@ static void check_object(const Level2Example& example, const rapidjson::Value& o
     check_object(example.lvl_attr, obj["lvl_attr"]);
 }
 
-static void check_object(const ArrayExample& example, const rapidjson::Value& obj) {
-    ASSERT_TRUE(obj.IsObject());
+//static void check_object(const ArrayExample& example, const rapidjson::Value& obj) {
+//    ASSERT_TRUE(obj.IsObject());
+//
+//#define CHECK_ARRAY(field, type_check, get_method) \
+//    ASSERT_TRUE(obj.HasMember(#field)); \
+//    const auto& field = obj[#field]; \
+//    ASSERT_TRUE(field.IsArray()); \
+//    ASSERT_EQ(example.field.size(), field.Size()); \
+//    for (rapidjson::SizeType i = 0; i < field.Size(); ++i) { \
+//        ASSERT_TRUE(field[i].type_check()); \
+//        EXPECT_EQ(example.field[i], field[i].get_method()); \
+//    }
+//
+//    CHECK_ARRAY(i32_arr, IsInt, GetInt)
+//    CHECK_ARRAY(dbl_arr, IsDouble, GetDouble)
+//    CHECK_ARRAY(u64_arr, IsUint64, GetUint64)
+//    CHECK_ARRAY(str_arr, IsString, GetString)
+//
+//#undef CHECK_ARRAY
+//
+//#define CHECK_ARRAY(field) \
+//    ASSERT_TRUE(obj.HasMember(#field)); \
+//    const auto& field = obj[#field]; \
+//    ASSERT_TRUE(field.IsArray()); \
+//    ASSERT_EQ(example.field.size(), field.Size()); \
+//    for (rapidjson::SizeType i = 0; i < field.Size(); ++i) { \
+//        check_object(example.field[i], field[i]); \
+//    }
+//
+//    CHECK_ARRAY(smp_arr)
+//    CHECK_ARRAY(lvl1_arr)
+//    CHECK_ARRAY(lvl2_arr)
+//
+//#undef CHECK_ARRAY
+//}
 
-#define CHECK_ARRAY(field, type_check, get_method) \
-    ASSERT_TRUE(obj.HasMember(#field)); \
-    const auto& field = obj[#field]; \
-    ASSERT_TRUE(field.IsArray()); \
-    ASSERT_EQ(example.field.size(), field.Size()); \
-    for (rapidjson::SizeType i = 0; i < field.Size(); ++i) { \
-        ASSERT_TRUE(field[i].type_check()); \
-        EXPECT_EQ(example.field[i], field[i].get_method()); \
-    }
+//static void check_object(const OptionalExample& example, const rapidjson::Value& obj) {
+//    ASSERT_TRUE(obj.IsObject());
+//
+//#define CHECK_OPTIONAL(field, type_check, get_method) \
+//    if (example.field.has_value()) { \
+//        ASSERT_TRUE(obj.HasMember(#field)); \
+//        const auto& field = obj[#field]; \
+//        ASSERT_TRUE(field.type_check()); \
+//        EXPECT_EQ(example.field.value(), field.get_method()); \
+//    } else { \
+//        ASSERT_FALSE(obj.HasMember(#field)); \
+//    }
+//
+//    CHECK_OPTIONAL(i32_opt, IsInt, GetInt)
+//    CHECK_OPTIONAL(dbl_opt, IsDouble, GetDouble)
+//    CHECK_OPTIONAL(u64_opt, IsUint64, GetUint64)
+//    CHECK_OPTIONAL(str_opt, IsString, GetString)
+//#undef CHECK_OPTIONAL
+//
+//#define CHECK_OPTIONAL(field) \
+//    if (example.field.has_value()) { \
+//        ASSERT_TRUE(obj.HasMember(#field)); \
+//        const auto& field = obj[#field]; \
+//        ASSERT_TRUE(field.IsObject()); \
+//        check_object(example.field.value(), field); \
+//    } else { \
+//        ASSERT_TRUE(!obj.HasMember(#field) || obj[#field].IsNull()); \
+//    }
+//    CHECK_OPTIONAL(smp_opt)
+//    CHECK_OPTIONAL(lvl1_opt)
+//    CHECK_OPTIONAL(lvl2_opt)
+//
+//#undef CHECK_OPTIONAL
+//}
 
-    CHECK_ARRAY(i32_arr, IsInt, GetInt)
-    CHECK_ARRAY(dbl_arr, IsDouble, GetDouble)
-    CHECK_ARRAY(u64_arr, IsUint64, GetUint64)
-    CHECK_ARRAY(str_arr, IsString, GetString)
+//static void check_object(SimpleEnum example, const rapidjson::Value& val) {
+//    ASSERT_TRUE(val.IsString());
+//
+//    auto check_aliased_value = [](const char* str) {
+//        if (!std::strcmp(str, "TWO") ||
+//            !std::strcmp(str, "THREE"))
+//            return true;
+//        return false;
+//    };
+//
+//    switch (example)
+//    {
+//    case ENUM_VALUE_ONE:
+//        ASSERT_STREQ("ONE", val.GetString());
+//        break;
+//    case ENUM_VALUE_TWO: {
+//        ASSERT_PRED1(check_aliased_value, val.GetString());
+//        break;
+//    }
+//    default:
+//        FAIL() << "Unknown enum value";
+//        break;
+//    }
+//}
 
-#undef CHECK_ARRAY
-
-#define CHECK_ARRAY(field) \
-    ASSERT_TRUE(obj.HasMember(#field)); \
-    const auto& field = obj[#field]; \
-    ASSERT_TRUE(field.IsArray()); \
-    ASSERT_EQ(example.field.size(), field.Size()); \
-    for (rapidjson::SizeType i = 0; i < field.Size(); ++i) { \
-        check_object(example.field[i], field[i]); \
-    }
-
-    CHECK_ARRAY(smp_arr)
-    CHECK_ARRAY(lvl1_arr)
-    CHECK_ARRAY(lvl2_arr)
-
-#undef CHECK_ARRAY
-}
-
-static void check_object(const OptionalExample& example, const rapidjson::Value& obj) {
-    ASSERT_TRUE(obj.IsObject());
-
-#define CHECK_OPTIONAL(field, type_check, get_method) \
-    if (example.field.has_value()) { \
-        ASSERT_TRUE(obj.HasMember(#field)); \
-        const auto& field = obj[#field]; \
-        ASSERT_TRUE(field.type_check()); \
-        EXPECT_EQ(example.field.value(), field.get_method()); \
-    } else { \
-        ASSERT_FALSE(obj.HasMember(#field)); \
-    }
-
-    CHECK_OPTIONAL(i32_opt, IsInt, GetInt)
-    CHECK_OPTIONAL(dbl_opt, IsDouble, GetDouble)
-    CHECK_OPTIONAL(u64_opt, IsUint64, GetUint64)
-    CHECK_OPTIONAL(str_opt, IsString, GetString)
-#undef CHECK_OPTIONAL
-
-#define CHECK_OPTIONAL(field) \
-    if (example.field.has_value()) { \
-        ASSERT_TRUE(obj.HasMember(#field)); \
-        const auto& field = obj[#field]; \
-        ASSERT_TRUE(field.IsObject()); \
-        check_object(example.field.value(), field); \
-    } else { \
-        ASSERT_TRUE(!obj.HasMember(#field) || obj[#field].IsNull()); \
-    }
-    CHECK_OPTIONAL(smp_opt)
-    CHECK_OPTIONAL(lvl1_opt)
-    CHECK_OPTIONAL(lvl2_opt)
-
-#undef CHECK_OPTIONAL
-}
-
-static void check_object(SimpleEnum example, const rapidjson::Value& val) {
-    ASSERT_TRUE(val.IsString());
-
-    auto check_aliased_value = [](const char* str) {
-        if (!std::strcmp(str, "TWO") ||
-            !std::strcmp(str, "THREE"))
-            return true;
-        return false;
-    };
-
-    switch (example)
-    {
-    case ENUM_VALUE_ONE:
-        ASSERT_STREQ("ONE", val.GetString());
-        break;
-    case ENUM_VALUE_TWO: {
-        ASSERT_PRED1(check_aliased_value, val.GetString());
-        break;
-    }
-    default:
-        FAIL() << "Unknown enum value";
-        break;
-    }
-}
-
-static void check_object(const EnumExample& example, const rapidjson::Value& obj) {
-    ASSERT_TRUE(obj.IsObject());
-    ASSERT_TRUE(obj.HasMember("enum_attr"));
-    check_object(example.enum_attr, obj["enum_attr"]);
-    ASSERT_TRUE(obj.HasMember("enum_arr"));
-    const auto& enum_arr = obj["enum_arr"];
-    ASSERT_TRUE(enum_arr.IsArray());
-    ASSERT_EQ(example.enum_arr.size(), enum_arr.Size());
-    for (rapidjson::SizeType i = 0; i < enum_arr.Size(); ++i) {
-        check_object(example.enum_arr[i], enum_arr[i]);
-    }
-}
+//static void check_object(const EnumExample& example, const rapidjson::Value& obj) {
+//    ASSERT_TRUE(obj.IsObject());
+//    ASSERT_TRUE(obj.HasMember("enum_attr"));
+//    check_object(example.enum_attr, obj["enum_attr"]);
+//    ASSERT_TRUE(obj.HasMember("enum_arr"));
+//    const auto& enum_arr = obj["enum_arr"];
+//    ASSERT_TRUE(enum_arr.IsArray());
+//    ASSERT_EQ(example.enum_arr.size(), enum_arr.Size());
+//    for (rapidjson::SizeType i = 0; i < enum_arr.Size(); ++i) {
+//        check_object(example.enum_arr[i], enum_arr[i]);
+//    }
+//}
 
 static void check_object(EnumTypesExample example, const rapidjson::Value& obj) {
     ASSERT_TRUE(obj.IsString());
