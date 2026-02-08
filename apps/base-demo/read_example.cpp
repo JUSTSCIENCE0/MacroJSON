@@ -92,36 +92,36 @@ void level2_read_example() {
 }
 
 void array_read_example() {
-    ArrayExample example{};
-    std::string error_descr{};
-    auto code = macrojson::json_file_to_object(JSON_EXAMPLES_DIRECTORY "array_example.json", example, error_descr);
-    if (code != macrojson::MJsonErrorCode::E_MJSON_OK) {
-        std::cerr << "Error reading SimpleExample from JSON." << std::endl;
-        if (!error_descr.empty()) {
-            std::cerr << error_descr << std::endl;
-        }
-        return;
-    }
+    //ArrayExample example{};
+    //std::string error_descr{};
+    //auto code = macrojson::json_file_to_object(JSON_EXAMPLES_DIRECTORY "array_example.json", example, error_descr);
+    //if (code != macrojson::MJsonErrorCode::E_MJSON_OK) {
+    //    std::cerr << "Error reading SimpleExample from JSON." << std::endl;
+    //    if (!error_descr.empty()) {
+    //        std::cerr << error_descr << std::endl;
+    //    }
+    //    return;
+    //}
 
-    std::cout << "array_read_example" << std::endl;
+    //std::cout << "array_read_example" << std::endl;
 }
 
 void enum_read_example() {
-    EnumExample example{};
-    std::string error_descr{};
-    auto code = macrojson::json_file_to_object(JSON_EXAMPLES_DIRECTORY "enum_example.json", example, error_descr);
-    if (code != macrojson::MJsonErrorCode::E_MJSON_OK) {
-        std::cerr << "Error reading EnumExample from JSON." << std::endl;
-        if (!error_descr.empty()) {
-            std::cerr << error_descr << std::endl;
-        }
-        return;
-    }
-    std::cout << "enum_read_example" << std::endl;
-    std::cout << "Deserialized JSON (part):" << std::endl;
-    std::cout << "enum_attr = " << static_cast<int>(example.enum_attr) << std::endl;
-    std::cout << "enum_arr size = " << example.enum_arr.size() << std::endl;
-    std::cout << std::endl;
+    //EnumExample example{};
+    //std::string error_descr{};
+    //auto code = macrojson::json_file_to_object(JSON_EXAMPLES_DIRECTORY "enum_example.json", example, error_descr);
+    //if (code != macrojson::MJsonErrorCode::E_MJSON_OK) {
+    //    std::cerr << "Error reading EnumExample from JSON." << std::endl;
+    //    if (!error_descr.empty()) {
+    //        std::cerr << error_descr << std::endl;
+    //    }
+    //    return;
+    //}
+    //std::cout << "enum_read_example" << std::endl;
+    //std::cout << "Deserialized JSON (part):" << std::endl;
+    //std::cout << "enum_attr = " << static_cast<int>(example.enum_attr) << std::endl;
+    //std::cout << "enum_arr size = " << example.enum_arr.size() << std::endl;
+    //std::cout << std::endl;
 }
 
 void print(const Object1Example& o1) {
@@ -186,28 +186,28 @@ void print(const BaseExample& base) {
 }
 
 void polymorphic_complex_read_example() {
-    PolymorphicExample example{};
-    std::string error_descr{};
-    auto code = macrojson::json_file_to_object(JSON_EXAMPLES_DIRECTORY "polymorphic_example.json", example, error_descr);
-    if (code != macrojson::MJsonErrorCode::E_MJSON_OK) {
-        std::cerr << "Error reading PolymorphicExample from JSON." << std::endl;
-        if (!error_descr.empty()) {
-            std::cerr << error_descr << std::endl;
-        }
-        return;
-    }
+    //PolymorphicExample example{};
+    //std::string error_descr{};
+    //auto code = macrojson::json_file_to_object(JSON_EXAMPLES_DIRECTORY "polymorphic_example.json", example, error_descr);
+    //if (code != macrojson::MJsonErrorCode::E_MJSON_OK) {
+    //    std::cerr << "Error reading PolymorphicExample from JSON." << std::endl;
+    //    if (!error_descr.empty()) {
+    //        std::cerr << error_descr << std::endl;
+    //    }
+    //    return;
+    //}
 
-    std::cout << "polymorphic_complex_read_example" << std::endl;
-    std::cout << "Deserialized JSON:" << std::endl;
-    if (example.plm_attr) {
-        std::cout << "plm_attr: " << std::endl;
-        print(*example.plm_attr);
-    }
+    //std::cout << "polymorphic_complex_read_example" << std::endl;
+    //std::cout << "Deserialized JSON:" << std::endl;
+    //if (example.plm_attr) {
+    //    std::cout << "plm_attr: " << std::endl;
+    //    print(*example.plm_attr);
+    //}
 
-    std::cout << "plm_arr size = " << example.plm_arr.size() << std::endl;
-    std::cout << "plm_arr: " << std::endl;
-    for (const auto& item : example.plm_arr) {
-        print(*item);
-    }
-    std::cout << std::endl;
+    //std::cout << "plm_arr size = " << example.plm_arr.size() << std::endl;
+    //std::cout << "plm_arr: " << std::endl;
+    //for (const auto& item : example.plm_arr) {
+    //    print(*item);
+    //}
+    //std::cout << std::endl;
 }
