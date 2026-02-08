@@ -25,9 +25,11 @@
 #include <macrojson/reader.hpp>
 #include "@MJSON_DESCR_FILE@"
 
-// validator - TODO
+// schema
+#include <macrojson/schema.hpp>
+#include "@MJSON_DESCR_FILE@"
 
-// schema - TODO
+// validator - TODO
 
 #include <macrojson/aggregative.hpp>
 #include <macrojson/helpers.hpp>
