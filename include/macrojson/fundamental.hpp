@@ -16,6 +16,7 @@
 #include <vector>
 #include <optional>
 #include <memory>
+#include <type_traits>
 
 #include <fstream>
 #include <filesystem>
@@ -128,9 +129,123 @@ namespace macrojson {
     template<typename T>
     MJsonErrorCode read_from_json(const char* name, const Value& root, std::optional<T>& val);
 
-    // Fundamental types validators
-    // TODO
-
     // Fundamental types schemas
+    template<typename T, typename... Validators>
+    void generate_schema(
+            const char* name, const char* title, const char* description,
+            Document::AllocatorType& alloc, Value& schema,
+            Validators... validators);
+
+    static inline void generate_schema_base(
+            const char* name, const char* title, const char* description, const char* type,
+            Document::AllocatorType& alloc, Value& schema) {
+        if (name) {
+            Value jname;
+            jname.SetString(name, alloc);
+            schema.AddMember(jname, Value().SetObject(), alloc);
+        }
+
+        Value& jobj = name ? schema[name] : schema;
+
+        if (title) {
+            Value jtitle;
+            jtitle.SetString(title, alloc);
+            jobj.AddMember("title", jtitle, alloc);
+        }
+
+        if (description) {
+            Value jdesc;
+            jdesc.SetString(description, alloc);
+            jobj.AddMember("description", jdesc, alloc);
+        }
+
+        if (type) {
+            Value jtype;
+            jtype.SetString(type, alloc);
+            jobj.AddMember("type", jtype, alloc);
+        }
+    }
+
+    template<>
+    inline void generate_schema<std::string>(
+            const char* name, const char* title, const char* description,
+            Document::AllocatorType& alloc, Value& schema) {
+        generate_schema_base(name, title, description, "string", alloc, schema);
+    }
+
+    template<>
+    inline void generate_schema<std::string, const char*>(
+            const char* name, const char* title, const char* description,
+            Document::AllocatorType& alloc, Value& schema, const char* regexp) {
+        generate_schema<std::string>(name, title, description, alloc, schema);
+        Value& jobj = name ? schema[name] : schema;
+        Value jregexp;
+        jregexp.SetString(regexp, alloc);
+        jobj.AddMember("pattern", jregexp, alloc);
+    }
+
+    template<>
+    inline void generate_schema<std::string, int, int>(
+            const char* name, const char* title, const char* description,
+            Document::AllocatorType& alloc, Value& schema, int minLength, int maxLength) {
+        generate_schema<std::string>(name, title, description, alloc, schema);
+        Value& jobj = name ? schema[name] : schema;
+        jobj.AddMember("minLength", minLength, alloc);
+        jobj.AddMember("maxLength", maxLength, alloc);
+    }
+
+    template<
+        typename NUM,
+        std::enable_if_t<std::is_arithmetic_v<NUM>, bool> = true>
+    inline void generate_schema(
+            const char* name, const char* title, const char* description,
+            Document::AllocatorType& alloc, Value& schema) {
+        if constexpr (std::is_floating_point_v<NUM>) {
+            generate_schema_base(name, title, description, "number", alloc, schema);
+        }
+        else if constexpr (std::is_integral_v<NUM>) {
+            generate_schema_base(name, title, description, "integer", alloc, schema);
+        }
+        else {
+            static_assert(always_false<NUM>::value, "unsupported type");
+        }
+    }
+
+    template<
+        typename NUM,
+        std::enable_if_t<std::is_arithmetic_v<NUM>, bool> = true>
+    inline void generate_schema(
+            const char* name, const char* title, const char* description,
+            Document::AllocatorType& alloc, Value& schema,
+            NUM multipleOf) {
+        generate_schema<NUM>(name, title, description, alloc, schema);
+        Value& jobj = name ? schema[name] : schema;
+        jobj.AddMember("multipleOf", multipleOf, alloc);
+    }
+
+    template<
+        typename NUM,
+        std::enable_if_t<std::is_arithmetic_v<NUM>, bool> = true>
+    inline void generate_schema(
+            const char* name, const char* title, const char* description,
+            Document::AllocatorType& alloc, Value& schema,
+            NUM minimum, bool isExclusiveMinimum, NUM maximum, bool isExclusiveMaximum) {
+        generate_schema<NUM>(name, title, description, alloc, schema);
+        Value& jobj = name ? schema[name] : schema;
+        if (isExclusiveMinimum) {
+            jobj.AddMember("exclusiveMinimum", minimum, alloc);
+        }
+        else {
+            jobj.AddMember("minimum", minimum, alloc);
+        }
+        if (isExclusiveMaximum) {
+            jobj.AddMember("exclusiveMaximum", maximum, alloc);
+        }
+        else {
+            jobj.AddMember("maximum", maximum, alloc);
+        }
+    }
+
+    // Fundamental types validators
     // TODO
 }
