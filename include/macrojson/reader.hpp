@@ -6,7 +6,7 @@
 #include <macrojson/undef_macros.h>
 
 // struct reader macros
-#define MJSON_OBJECT_BEGIN(obj_name) \
+#define MJSON_OBJECT_BEGIN(obj_name, ...) \
 namespace macrojson { \
     static inline MJsonErrorCode read_from_json( \
             const char* name, const rapidjson::Value& root, obj_name& val) { \

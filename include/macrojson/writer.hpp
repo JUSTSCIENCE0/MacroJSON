@@ -6,7 +6,7 @@
 #include <macrojson/undef_macros.h>
 
 // struct writer macros
-#define MJSON_OBJECT_BEGIN(obj_name) \
+#define MJSON_OBJECT_BEGIN(obj_name, ...) \
 namespace macrojson { \
     static inline void write_to_json( \
             const char* name, const obj_name& jval, \

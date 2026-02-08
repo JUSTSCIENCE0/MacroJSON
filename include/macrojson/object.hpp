@@ -6,7 +6,7 @@
 #include <macrojson/undef_macros.h>
 
 // struct generation macros
-#define MJSON_OBJECT_BEGIN(obj_name) \
+#define MJSON_OBJECT_BEGIN(obj_name, ...) \
     struct obj_name {
 
 #define MJSON_FIELD(type, field, ...) \

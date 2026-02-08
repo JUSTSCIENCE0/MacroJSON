@@ -3,23 +3,45 @@
 //
 // License: MIT
 
-MJSON_OBJECT_BEGIN(SimpleExample)
-    MJSON_FIELD(int,         i32_attr)
-    MJSON_FIELD(double,      dbl_attr)
-    MJSON_FIELD(uint64_t,    u64_attr)
-    MJSON_FIELD(std::string, str_attr)
+MJSON_OBJECT_BEGIN(
+        SimpleExample,
+        "Simple Example",
+        "A simple example object with primitive types and string")
+    MJSON_FIELD(int,         i32_attr,
+        "I32 Attribute",
+        "32-bit integer attribute")
+    MJSON_FIELD(double,      dbl_attr,
+        "Double Attribute",
+        "Double-precision floating-point attribute")
+    MJSON_FIELD(uint64_t,    u64_attr,
+        "U64 Attribute",
+        "64-bit unsigned integer attribute")
+    MJSON_FIELD(std::string, str_attr,
+        "String Attribute", nullptr)
 MJSON_OBJECT_END(SimpleExample)
 
-MJSON_OBJECT_BEGIN(Level1Example)
-    MJSON_FIELD(int,           i32_attr)
-    MJSON_FIELD(double,        dbl_attr)
-    MJSON_FIELD(SimpleExample, obj_attr)
+MJSON_OBJECT_BEGIN(Level1Example,
+        "Level 1 Example",
+        "An example object that contains another object as an attribute")
+    MJSON_FIELD(int,           i32_attr,
+        "I32 Attribute",
+        "32-bit integer attribute")
+    MJSON_FIELD(double,        dbl_attr,
+        "Double Attribute",
+        "Double-precision floating-point attribute")
+    MJSON_FIELD(SimpleExample, obj_attr, nullptr, nullptr)
 MJSON_OBJECT_END(Level1Example)
 
-MJSON_OBJECT_BEGIN(Level2Example)
-    MJSON_FIELD(uint64_t,      u64_attr)
-    MJSON_FIELD(SimpleExample, smp_attr)
-    MJSON_FIELD(Level1Example, lvl_attr)
+MJSON_OBJECT_BEGIN(Level2Example,
+        "Level 2 Example",
+        "An example object that contains two levels of nested objects as attributes")
+    MJSON_FIELD(uint64_t,      u64_attr,
+        "U64 Attribute",
+        "64-bit unsigned integer attribute")
+    MJSON_FIELD(SimpleExample, smp_attr,
+        "Object Attribute",
+        "An attribute that is an object of type SimpleExample")
+    MJSON_FIELD(Level1Example, lvl_attr, nullptr, nullptr)
 MJSON_OBJECT_END(Level2Example)
 
 //MJSON_OBJECT_BEGIN(ArrayExample)

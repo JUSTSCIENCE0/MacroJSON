@@ -6,7 +6,7 @@
 #include <macrojson/undef_macros.h>
 
 // struct generation macros
-#define MJSON_OBJECT_BEGIN(obj_name /*, title, description*/) \
+#define MJSON_OBJECT_BEGIN(obj_name, def_title, def_descr) \
 namespace macrojson { \
     template<> \
     inline void generate_schema<obj_name>( \
@@ -16,7 +16,7 @@ namespace macrojson { \
         rapidjson::Value& jobj = name ? schema[name] : schema; \
         rapidjson::Value jprops(rapidjson::kObjectType);
 
-#define MJSON_FIELD(type, field, /*title, description,*/ ...)
+#define MJSON_FIELD(type, field, title, description, /* validation */...)
 
 #define MJSON_OBJECT_END(obj_name) \
         jobj.AddMember("properties", std::move(jprops), alloc); \
