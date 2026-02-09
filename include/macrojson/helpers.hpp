@@ -83,4 +83,32 @@ namespace macrojson {
 
         return json_doc_to_object(doc, object, error_descr);
     }
+
+    template <typename T>
+    static inline rapidjson::Document get_json_schema_doc(
+            const char* id = nullptr, const char* title = nullptr, const char* description = nullptr) {
+        rapidjson::Document doc;
+        doc.SetObject();
+        auto& alloc = doc.GetAllocator();
+        doc.AddMember("$schema", "https://json-schema.org/draft/2020-12/schema", alloc);
+
+        if (id) {
+            Value jid;
+            jid.SetString(id, alloc);
+            doc.AddMember("$id", jid, alloc);
+        }
+
+        generate_schema<T>(nullptr, title, description, alloc, doc);
+        return doc;
+    }
+
+    template <typename T>
+    static inline std::string get_json_schema_str(
+            const char* id = nullptr, const char* title = nullptr, const char* description = nullptr) {
+        rapidjson::Document doc = get_json_schema_doc<T>(id, title, description);
+        rapidjson::StringBuffer buffer;
+        rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+        doc.Accept(writer);
+        return std::string(buffer.GetString(), buffer.GetSize());
+    }
 }
