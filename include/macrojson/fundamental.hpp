@@ -44,6 +44,16 @@ namespace macrojson {
         E_MJSON_UNSUPPORTED_OBJECT_TYPE
     };
 
+    // helpers
+    // trait to detect std::optional<T>
+    template<typename T> struct is_std_optional : std::false_type {};
+    template<typename U> struct is_std_optional<std::optional<U>> : std::true_type {};
+    template<typename T> inline constexpr bool is_std_optional_v = is_std_optional<T>::value;
+    // trait to detect std::vector<T>
+    template<typename T> struct is_std_vector : std::false_type {};
+    template<typename U> struct is_std_vector<std::vector<U>> : std::true_type {};
+    template<typename T> inline constexpr bool is_std_vector_v = is_std_vector<T>::value;
+
     // Fundamental types writers
     static inline void write_to_json(
             const char* name, Value&& jval, Document::AllocatorType& alloc, Value& root) {
