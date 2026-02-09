@@ -207,7 +207,7 @@ namespace macrojson {
             generate_schema_base(name, title, description, "integer", alloc, schema);
         }
         else {
-            static_assert(always_false<NUM>::value, "unsupported type");
+            static_assert(false, "unsupported type");
         }
     }
 
