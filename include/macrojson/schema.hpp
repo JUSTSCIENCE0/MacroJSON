@@ -12,14 +12,23 @@ namespace macrojson { \
     inline void generate_schema<obj_name>( \
             const char* name, const char* title, const char* description, \
             rapidjson::Document::AllocatorType& alloc, rapidjson::Value& schema) { \
+        if (!title) \
+            title = def_title; \
+        if (!description) \
+            description = def_descr; \
         generate_schema_base(name, title, description, "object", alloc, schema); \
         rapidjson::Value& jobj = name ? schema[name] : schema; \
-        rapidjson::Value jprops(rapidjson::kObjectType);
+        jobj.AddMember("properties", rapidjson::Value(rapidjson::kObjectType), alloc); \
+        rapidjson::Value& jprops = jobj["properties"]; \
+        jobj.AddMember("required", rapidjson::Value(rapidjson::kArrayType), alloc); \
+        rapidjson::Value& jreq = jobj["required"];
 
-#define MJSON_FIELD(type, field, title, description, /* validation */...)
+#define MJSON_FIELD(type, field, title, description, /* validation */...) \
+        if constexpr (!is_std_optional_v<type> && !is_std_vector_v<type>) \
+            jreq.PushBack(#field, alloc); \
+        generate_schema<type>(#field, title, description, alloc, jprops, ##__VA_ARGS__); \
 
 #define MJSON_OBJECT_END(obj_name) \
-        jobj.AddMember("properties", std::move(jprops), alloc); \
     } \
 }
 
