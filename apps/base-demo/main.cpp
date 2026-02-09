@@ -9,6 +9,8 @@
 
 int main() {
     simple_schema_example();
+    level1_schema_example();
+    level2_schema_example();
 
     simple_write_example();
     level1_write_example();

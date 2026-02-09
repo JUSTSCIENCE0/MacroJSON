@@ -17,3 +17,20 @@ void simple_schema_example() {
     std::cout << std::endl;
 }
 
+void level1_schema_example() {
+    auto schema = macrojson::get_json_schema_str<Level1Example>(
+        "http://example.com/schemas/level1_example.json");
+    std::cout << "level1_schema_example" << std::endl;
+    std::cout << "Generated JSON Schema:" << std::endl;
+    std::cout << schema << std::endl;
+    std::cout << std::endl;
+}
+
+void level2_schema_example() {
+    auto schema = macrojson::get_json_schema_str<Level2Example>(
+        "http://example.com/schemas/level2_example.json");
+    std::cout << "level2_schema_example" << std::endl;
+    std::cout << "Generated JSON Schema:" << std::endl;
+    std::cout << schema << std::endl;
+    std::cout << std::endl;
+}
