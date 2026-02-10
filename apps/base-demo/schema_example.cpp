@@ -34,3 +34,12 @@ void level2_schema_example() {
     std::cout << schema << std::endl;
     std::cout << std::endl;
 }
+
+void optional_schema_example() {
+    auto schema = macrojson::get_json_schema_str<OptionalExample>(
+        "http://example.com/schemas/optional_example.json");
+    std::cout << "optional_schema_example" << std::endl;
+    std::cout << "Generated JSON Schema:" << std::endl;
+    std::cout << schema << std::endl;
+    std::cout << std::endl;
+}

@@ -97,9 +97,20 @@ namespace macrojson {
         return E_MJSON_OK;
     }
 
-    // Aggregative types validators
-    // TODO
-
     // Aggregative types schemas
+    template<typename T, typename... Validators>
+    void generate_schema(
+            const char* name, const char* title, const char* description,
+            Document::AllocatorType& alloc, Value& schema,
+            Validators... validators) {
+        if constexpr (is_std_optional_v<T>)
+            generate_schema<typename T::value_type>(name, title, description, alloc, schema, validators...);
+        else if constexpr (is_std_vector_v<T>)
+            generate_schema<typename T::value_type>(name, title, description, alloc, schema, validators...);
+        else
+            static_assert(false, "unsupported type");
+    }
+
+    // Aggregative types validators
     // TODO
 }

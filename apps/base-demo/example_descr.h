@@ -44,6 +44,32 @@ MJSON_OBJECT_BEGIN(Level2Example,
     MJSON_FIELD(Level1Example, lvl_attr, nullptr, nullptr)
 MJSON_OBJECT_END(Level2Example)
 
+MJSON_OBJECT_BEGIN(OptionalExample,
+        "Optional Example",
+        "An example object that contains optional attributes of various types")
+   MJSON_FIELD(std::optional<int>,           i32_opt,
+        "Optional I32 Attribute",
+        "An optional 32-bit integer attribute")
+   MJSON_FIELD(std::optional<double>,        dbl_opt,
+        "Optional Double Attribute",
+        "An optional double-precision floating-point attribute")
+   MJSON_FIELD(std::optional<uint64_t>,      u64_opt,
+        "Optional U64 Attribute",
+        "An optional 64-bit unsigned integer attribute")
+   MJSON_FIELD(std::optional<std::string>,   str_opt,
+        "Optional String Attribute",
+        "An optional string attribute")
+   MJSON_FIELD(std::optional<SimpleExample>, smp_opt,
+        "Optional Object Attribute",
+        "An optional object of type SimpleExample")
+   MJSON_FIELD(std::optional<Level1Example>, lvl1_opt,
+        "Optional Level1 Object Attribute",
+        "An optional object of type Level1Example")
+   MJSON_FIELD(std::optional<Level2Example>, lvl2_opt,
+        "Optional Level2 Object Attribute",
+        "An optional object of type Level2Example")
+MJSON_OBJECT_END(OptionalExample)
+
 //MJSON_OBJECT_BEGIN(ArrayExample)
 //    MJSON_FIELD(std::vector<int>,           i32_arr)
 //    MJSON_FIELD(std::vector<double>,        dbl_arr)
