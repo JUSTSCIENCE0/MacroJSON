@@ -92,18 +92,18 @@ void level2_read_example() {
 }
 
 void array_read_example() {
-    //ArrayExample example{};
-    //std::string error_descr{};
-    //auto code = macrojson::json_file_to_object(JSON_EXAMPLES_DIRECTORY "array_example.json", example, error_descr);
-    //if (code != macrojson::MJsonErrorCode::E_MJSON_OK) {
-    //    std::cerr << "Error reading SimpleExample from JSON." << std::endl;
-    //    if (!error_descr.empty()) {
-    //        std::cerr << error_descr << std::endl;
-    //    }
-    //    return;
-    //}
+    ArrayExample example{};
+    std::string error_descr{};
+    auto code = macrojson::json_file_to_object(JSON_EXAMPLES_DIRECTORY "array_example.json", example, error_descr);
+    if (code != macrojson::MJsonErrorCode::E_MJSON_OK) {
+       std::cerr << "Error reading SimpleExample from JSON." << std::endl;
+       if (!error_descr.empty()) {
+           std::cerr << error_descr << std::endl;
+       }
+       return;
+    }
 
-    //std::cout << "array_read_example" << std::endl;
+    std::cout << "array_read_example" << std::endl;
 }
 
 void enum_read_example() {
