@@ -52,3 +52,12 @@ void array_schema_example() {
     std::cout << schema << std::endl;
     std::cout << std::endl;
 }
+
+void enum_schema_example() {
+    auto schema = macrojson::get_json_schema_str<EnumExample>(
+        "http://example.com/schemas/enum_example.json");
+    std::cout << "enum_schema_example" << std::endl;
+    std::cout << "Generated JSON Schema:" << std::endl;
+    std::cout << schema << std::endl;
+    std::cout << std::endl;
+}

@@ -107,21 +107,21 @@ void array_read_example() {
 }
 
 void enum_read_example() {
-    //EnumExample example{};
-    //std::string error_descr{};
-    //auto code = macrojson::json_file_to_object(JSON_EXAMPLES_DIRECTORY "enum_example.json", example, error_descr);
-    //if (code != macrojson::MJsonErrorCode::E_MJSON_OK) {
-    //    std::cerr << "Error reading EnumExample from JSON." << std::endl;
-    //    if (!error_descr.empty()) {
-    //        std::cerr << error_descr << std::endl;
-    //    }
-    //    return;
-    //}
-    //std::cout << "enum_read_example" << std::endl;
-    //std::cout << "Deserialized JSON (part):" << std::endl;
-    //std::cout << "enum_attr = " << static_cast<int>(example.enum_attr) << std::endl;
-    //std::cout << "enum_arr size = " << example.enum_arr.size() << std::endl;
-    //std::cout << std::endl;
+    EnumExample example{};
+    std::string error_descr{};
+    auto code = macrojson::json_file_to_object(JSON_EXAMPLES_DIRECTORY "enum_example.json", example, error_descr);
+    if (code != macrojson::MJsonErrorCode::E_MJSON_OK) {
+       std::cerr << "Error reading EnumExample from JSON." << std::endl;
+       if (!error_descr.empty()) {
+           std::cerr << error_descr << std::endl;
+       }
+       return;
+    }
+    std::cout << "enum_read_example" << std::endl;
+    std::cout << "Deserialized JSON (part):" << std::endl;
+    std::cout << "enum_attr = " << static_cast<int>(example.enum_attr) << std::endl;
+    std::cout << "enum_arr size = " << example.enum_arr.size() << std::endl;
+    std::cout << std::endl;
 }
 
 void print(const Object1Example& o1) {

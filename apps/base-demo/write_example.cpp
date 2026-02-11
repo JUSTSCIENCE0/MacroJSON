@@ -121,20 +121,20 @@ void array_write_example() {
 }
 
 void enum_write_example() {
-    //EnumExample example{
-    //    /* enum_attr */ SimpleEnum::ENUM_VALUE_TWO,
-    //    /* enum_arr */ {
-    //        SimpleEnum::ENUM_VALUE_ONE,
-    //        SimpleEnum::ENUM_VALUE_TWO,
-    //        SimpleEnum::ENUM_VALUE_THREE
-    //    }
-    //};
-    //std::string json{};
-    //macrojson::object_to_json_str(example, json);
-    //std::cout << "enum_write_example" << std::endl;
-    //std::cout << "Serialized JSON:" << std::endl;
-    //std::cout << json << std::endl;
-    //std::cout << std::endl;
+    EnumExample example{
+       /* enum_attr */ SimpleEnum::ENUM_VALUE_TWO,
+       /* enum_arr */ {
+           SimpleEnum::ENUM_VALUE_ONE,
+           SimpleEnum::ENUM_VALUE_TWO,
+           SimpleEnum::ENUM_VALUE_THREE
+       }
+    };
+    std::string json{};
+    macrojson::object_to_json_str(example, json);
+    std::cout << "enum_write_example" << std::endl;
+    std::cout << "Serialized JSON:" << std::endl;
+    std::cout << json << std::endl;
+    std::cout << std::endl;
 }
 
 void polymorphic_simple_write_example() {
