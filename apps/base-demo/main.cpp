@@ -12,6 +12,7 @@ int main() {
     level1_schema_example();
     level2_schema_example();
     optional_schema_example();
+    array_schema_example();
 
     simple_write_example();
     level1_write_example();

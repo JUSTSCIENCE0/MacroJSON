@@ -103,11 +103,14 @@ namespace macrojson {
             const char* name, const char* title, const char* description,
             Document::AllocatorType& alloc, Value& schema,
             Validators... validators) {
-        if constexpr (is_std_optional_v<T>)
+        if constexpr (is_std_optional_v<T>) {
             generate_schema<typename T::value_type>(name, title, description, alloc, schema, validators...);
-        else if constexpr (is_std_vector_v<T>)
-            generate_schema<typename T::value_type>(name, title, description, alloc, schema, validators...);
-        else
+        }
+        else if constexpr (is_std_vector_v<T>) {
+            generate_schema_base(name, title, description, "array", alloc, schema);
+            Value& jobj = name ? schema[name] : schema;
+            generate_schema<typename T::value_type>("items", nullptr, nullptr, alloc, jobj, validators...);
+        } else
             static_assert(false, "unsupported type");
     }
 

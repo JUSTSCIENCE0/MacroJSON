@@ -43,3 +43,12 @@ void optional_schema_example() {
     std::cout << schema << std::endl;
     std::cout << std::endl;
 }
+
+void array_schema_example() {
+    auto schema = macrojson::get_json_schema_str<ArrayExample>(
+        "http://example.com/schemas/array_example.json");
+    std::cout << "array_schema_example" << std::endl;
+    std::cout << "Generated JSON Schema:" << std::endl;
+    std::cout << schema << std::endl;
+    std::cout << std::endl;
+}
