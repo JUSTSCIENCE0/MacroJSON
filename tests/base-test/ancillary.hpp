@@ -47,7 +47,7 @@ static void check_object(const Level2Example& example, const rapidjson::Value& o
     ASSERT_TRUE(obj.HasMember("lvl_attr"));
     check_object(example.lvl_attr, obj["lvl_attr"]);
 }
-/*
+
 static void check_object(const ArrayExample& example, const rapidjson::Value& obj) {
    ASSERT_TRUE(obj.IsObject());
 
@@ -83,7 +83,7 @@ static void check_object(const ArrayExample& example, const rapidjson::Value& ob
 
 #undef CHECK_ARRAY
 }
-*/
+
 static void check_object(const OptionalExample& example, const rapidjson::Value& obj) {
    ASSERT_TRUE(obj.IsObject());
 

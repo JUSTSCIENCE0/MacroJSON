@@ -71,35 +71,35 @@ TEST(WriterTests, Level2ExampleTest) {
 }
 
 TEST(WriterTests, ArrayExampleTest) {
-    //ArrayExample example{
-    //    /* i32_arr */ {1, 2, 3, 4, 5},
-    //    /* dbl_arr */ {1.1, 2.2, 3.3},
-    //    /* u64_arr */ {10ULL, 20ULL, 30ULL},
-    //    /* str_arr */ {"one", "two", "three"},
-    //    /* smp_arr */ {
-    //        {10, 0.1, 100ULL, "first"},
-    //        {20, 0.2, 200ULL, "second"}
-    //    },
-    //    /* lvl1_arr */ {
-    //        {1, 1.0, {1000, 0.01, 10000ULL, "lvl1_first"}},
-    //        {2, 2.0, {2000, 0.02, 20000ULL, "lvl1_second"}}
-    //    },
-    //    /* lvl2_arr */ {
-    //        {3000ULL,
-    //         {3, 3.0, 30000ULL, "lvl2_smp_first"},
-    //         {4, 4.0, {4000, 0.04, 40000ULL, "lvl2_lvl_first"}}},
-    //        {6000ULL,
-    //         {5, 5.0, 50000ULL, "lvl2_smp_second"},
-    //         {6, 6.0, {6000, 0.06, 60000ULL, "lvl2_lvl_second"}}}
-    //    }
-    //};
+    ArrayExample example{
+       /* i32_arr */ {1, 2, 3, 4, 5},
+       /* dbl_arr */ {1.1, 2.2, 3.3},
+       /* u64_arr */ {10ULL, 20ULL, 30ULL},
+       /* str_arr */ {"one", "two", "three"},
+       /* smp_arr */ {
+           {10, 0.1, 100ULL, "first"},
+           {20, 0.2, 200ULL, "second"}
+       },
+       /* lvl1_arr */ {
+           {1, 1.0, {1000, 0.01, 10000ULL, "lvl1_first"}},
+           {2, 2.0, {2000, 0.02, 20000ULL, "lvl1_second"}}
+       },
+       /* lvl2_arr */ {
+           {3000ULL,
+            {3, 3.0, 30000ULL, "lvl2_smp_first"},
+            {4, 4.0, {4000, 0.04, 40000ULL, "lvl2_lvl_first"}}},
+           {6000ULL,
+            {5, 5.0, 50000ULL, "lvl2_smp_second"},
+            {6, 6.0, {6000, 0.06, 60000ULL, "lvl2_lvl_second"}}}
+       }
+    };
 
-    //rapidjson::Document doc;
-    //doc.SetObject();
+    rapidjson::Document doc;
+    doc.SetObject();
 
-    //macrojson::write_to_json(nullptr, example, doc.GetAllocator(), doc);
+    macrojson::write_to_json(nullptr, example, doc.GetAllocator(), doc);
 
-    //check_object(example, doc);
+    check_object(example, doc);
 }
 
 TEST(WriterTests, OptionalExampleTest) {

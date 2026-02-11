@@ -44,15 +44,31 @@ MJSON_OBJECT_BEGIN(Level2Example,
     MJSON_FIELD(Level1Example, lvl_attr, nullptr, nullptr)
 MJSON_OBJECT_END(Level2Example)
 
-//MJSON_OBJECT_BEGIN(ArrayExample)
-//    MJSON_FIELD(std::vector<int>,           i32_arr)
-//    MJSON_FIELD(std::vector<double>,        dbl_arr)
-//    MJSON_FIELD(std::vector<uint64_t>,      u64_arr)
-//    MJSON_FIELD(std::vector<std::string>,   str_arr)
-//    MJSON_FIELD(std::vector<SimpleExample>, smp_arr)
-//    MJSON_FIELD(std::vector<Level1Example>, lvl1_arr)
-//    MJSON_FIELD(std::vector<Level2Example>, lvl2_arr)
-//MJSON_OBJECT_END(ArrayExample)
+MJSON_OBJECT_BEGIN(ArrayExample,
+        "Array Example",
+        "An example object that contains arrays of various types as attributes")
+   MJSON_FIELD(std::vector<int>,           i32_arr,
+        "I32 Array Attribute",
+        "An array of 32-bit integer attributes")
+   MJSON_FIELD(std::vector<double>,        dbl_arr,
+        "Double Array Attribute",
+        "An array of double-precision floating-point attributes")
+   MJSON_FIELD(std::vector<uint64_t>,      u64_arr,
+        "U64 Array Attribute",
+        "An array of 64-bit unsigned integer attributes")
+   MJSON_FIELD(std::vector<std::string>,   str_arr,
+        "String Array Attribute",
+        "An array of string attributes")
+   MJSON_FIELD(std::vector<SimpleExample>, smp_arr,
+        "Object Array Attribute",
+        "An array of objects of type SimpleExample")
+   MJSON_FIELD(std::vector<Level1Example>, lvl1_arr,
+        "Level1 Object Array Attribute",
+        "An array of objects of type Level1Example")
+   MJSON_FIELD(std::vector<Level2Example>, lvl2_arr,
+        "Level2 Object Array Attribute",
+        "An array of objects of type Level2Example")
+MJSON_OBJECT_END(ArrayExample)
 
 MJSON_OBJECT_BEGIN(OptionalExample,
         "Optional Example",

@@ -120,13 +120,13 @@ TEST(ReaderTests, ArrayExampleTest) {
     rapidjson::Document doc;
     doc.Parse(json_str);
 
-    //ArrayExample example;
-    //ASSERT_EQ(
-    //    macrojson::read_from_json(nullptr, doc, example),
-    //    macrojson::MJsonErrorCode::E_MJSON_OK
-    //);
+    ArrayExample example;
+    ASSERT_EQ(
+       macrojson::read_from_json(nullptr, doc, example),
+       macrojson::MJsonErrorCode::E_MJSON_OK
+    );
 
-    //check_object(example, doc);
+    check_object(example, doc);
 }
 
 TEST(ReaderTests, OptionalExampleTest) {
