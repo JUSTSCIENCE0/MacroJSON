@@ -126,14 +126,14 @@ TEST(WriterTests, OptionalExampleTest) {
 }
 
 TEST(WriterTests, EnumExampleTest) {
-    //EnumExample example{
-    //    /* enum_attr */ ENUM_VALUE_TWO,
-    //    /* enum_arr */ {ENUM_VALUE_ONE, ENUM_VALUE_TWO, ENUM_VALUE_THREE}
-    //};
-    //rapidjson::Document doc;
-    //doc.SetObject();
-    //macrojson::write_to_json(nullptr, example, doc.GetAllocator(), doc);
-    //check_object(example, doc);
+    EnumExample example{
+       /* enum_attr */ ENUM_VALUE_TWO,
+       /* enum_arr */ {ENUM_VALUE_ONE, ENUM_VALUE_TWO, ENUM_VALUE_THREE}
+    };
+    rapidjson::Document doc;
+    doc.SetObject();
+    macrojson::write_to_json(nullptr, example, doc.GetAllocator(), doc);
+    check_object(example, doc);
 }
 
 TEST(WriterTests, PolymorphicExampleTest) {

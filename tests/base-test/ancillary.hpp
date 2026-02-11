@@ -118,7 +118,7 @@ static void check_object(const OptionalExample& example, const rapidjson::Value&
 
 #undef CHECK_OPTIONAL
 }
-/*
+
 static void check_object(SimpleEnum example, const rapidjson::Value& val) {
    ASSERT_TRUE(val.IsString());
 
@@ -156,7 +156,6 @@ static void check_object(const EnumExample& example, const rapidjson::Value& obj
        check_object(example.enum_arr[i], enum_arr[i]);
    }
 }
-*/
 
 static void check_object(EnumTypesExample example, const rapidjson::Value& obj) {
     ASSERT_TRUE(obj.IsString());

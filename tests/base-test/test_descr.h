@@ -104,10 +104,16 @@ MJSON_ENUM_BEGIN(SimpleEnum,
     MJSON_ENUM_ALIAS(ENUM_VALUE_THREE, THREE, ENUM_VALUE_TWO)
 MJSON_ENUM_END(SimpleEnum)
 
-//MJSON_OBJECT_BEGIN(EnumExample)
-//    MJSON_FIELD(SimpleEnum,              enum_attr)
-//    MJSON_FIELD(std::vector<SimpleEnum>, enum_arr)
-//MJSON_OBJECT_END(EnumExample)
+MJSON_OBJECT_BEGIN(EnumExample,
+        "Enum Example",
+        "An example object that contains an enum attribute and an array of enums as attributes")
+   MJSON_FIELD(SimpleEnum,              enum_attr,
+        "Enum Attribute",
+        "An attribute of type SimpleEnum")
+   MJSON_FIELD(std::vector<SimpleEnum>, enum_arr,
+        "Enum Array Attribute",
+        "An array of enum attributes")
+MJSON_OBJECT_END(EnumExample)
 
 MJSON_ENUM_BEGIN(EnumTypesExample,
         "Enum Types Example",
