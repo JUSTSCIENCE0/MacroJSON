@@ -26,7 +26,7 @@ namespace macrojson { \
 }
 
 // enum writer macros
-#define MJSON_ENUM_BEGIN(enum_name) \
+#define MJSON_ENUM_BEGIN(enum_name, ...) \
 namespace macrojson { \
     static inline void write_to_json( \
             const char* name, enum_name jval, \

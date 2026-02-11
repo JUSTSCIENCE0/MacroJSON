@@ -16,7 +16,7 @@
     };
 
 // enum generation macros
-#define MJSON_ENUM_BEGIN(enum_name) \
+#define MJSON_ENUM_BEGIN(enum_name, ...) \
     enum enum_name {
 
 #define MJSON_ENUM_UNIT(name, short_name) \

@@ -33,7 +33,7 @@ namespace macrojson { \
 }
 
 // enum schema macros
-#define MJSON_ENUM_BEGIN(enum_name)
+#define MJSON_ENUM_BEGIN(enum_name, def_title, def_descr)
 
 #define MJSON_ENUM_UNIT(name, short_name)
 

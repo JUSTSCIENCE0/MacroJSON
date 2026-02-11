@@ -28,7 +28,7 @@ namespace macrojson { \
 }
 
 // enum reader macros
-#define MJSON_ENUM_BEGIN(enum_name) \
+#define MJSON_ENUM_BEGIN(enum_name, ...) \
 namespace macrojson { \
     static inline MJsonErrorCode read_from_json( \
             const char* name, const rapidjson::Value& root, enum_name& val) { \
