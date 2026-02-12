@@ -121,17 +121,30 @@ MJSON_ENUM_BEGIN(EnumTypesExample,
 MJSON_ENUM_END(EnumTypesExample)
 
 #define MJSON_BASE_OBJECT_NAME BaseExample
-MJSON_POLYMORPHIC_OBJECT_BEGIN()
+MJSON_POLYMORPHIC_OBJECT_BEGIN(
+        "Polymorphic object example",
+        "An example of a polymorphic object with a type discriminator enum "
+        "and two derived object types")
     MJSON_BASE_OBJECT_BEGIN(EnumTypesExample)
-        MJSON_BASE_OBJECT_FIELD(int,   i32_attr)
-        MJSON_BASE_OBJECT_FIELD(float, flt_attr)
+      MJSON_BASE_OBJECT_FIELD(int,   i32_attr,
+        "I32 Attribute",
+        "32-bit integer attribute")
+      MJSON_BASE_OBJECT_FIELD(float, flt_attr,
+        "Float Attribute",
+        "Single-precision floating-point attribute")
     MJSON_BASE_OBJECT_END()
     MJSON_DERIVED_OBJECT_BEGIN(Object1Example, E_TYPE_OBJECT_1)
-        MJSON_DERIVED_OBJECT_FIELD(uint64_t, u64_attr)
-        MJSON_DERIVED_OBJECT_FIELD(double,   dbl_attr)
+      MJSON_DERIVED_OBJECT_FIELD(uint64_t, u64_attr,
+        "U64 Attribute",
+        "64-bit unsigned integer attribute")
+      MJSON_DERIVED_OBJECT_FIELD(double,   dbl_attr,
+        "Double Attribute",
+        "Double-precision floating-point attribute")
     MJSON_DERIVED_OBJECT_END(Object1Example)
     MJSON_DERIVED_OBJECT_BEGIN(Object2Example, E_TYPE_OBJECT_2)
-        MJSON_DERIVED_OBJECT_FIELD(std::string, str_attr)
+      MJSON_DERIVED_OBJECT_FIELD(std::string, str_attr,
+        "String Attribute",
+        "A string attribute")
     MJSON_DERIVED_OBJECT_END(Object2Example)
 MJSON_POLYMORPHIC_OBJECT_END()
 #undef MJSON_BASE_OBJECT_NAME

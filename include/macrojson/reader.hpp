@@ -60,7 +60,7 @@ namespace macrojson { \
 }
 
 // polymorphic object macros
-#define MJSON_POLYMORPHIC_OBJECT_BEGIN() \
+#define MJSON_POLYMORPHIC_OBJECT_BEGIN(...) \
 namespace macrojson { \
     static inline MJsonErrorCode read_from_json( \
             const char* name, const rapidjson::Value& root, std::unique_ptr<MJSON_BASE_OBJECT_NAME>& val) { \

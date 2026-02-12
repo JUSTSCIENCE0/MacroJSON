@@ -32,7 +32,7 @@
     };
 
 // polymorphic object macros
-#define MJSON_POLYMORPHIC_OBJECT_BEGIN()
+#define MJSON_POLYMORPHIC_OBJECT_BEGIN(...)
 
 #define MJSON_BASE_OBJECT_BEGIN(types_enum) \
     struct MJSON_BASE_OBJECT_NAME { \

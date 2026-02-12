@@ -53,7 +53,7 @@ namespace macrojson { \
 }
 
 // polymorphic object macros
-#define MJSON_POLYMORPHIC_OBJECT_BEGIN() \
+#define MJSON_POLYMORPHIC_OBJECT_BEGIN(...) \
 namespace macrojson { \
     static inline void write_to_json( \
             const char* name, const MJSON_BASE_OBJECT_NAME* val_ptr, \
