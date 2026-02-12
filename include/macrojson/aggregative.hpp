@@ -110,6 +110,9 @@ namespace macrojson {
             generate_schema_base(name, title, description, "array", alloc, schema);
             Value& jobj = name ? schema[name] : schema;
             generate_schema<typename T::value_type>("items", nullptr, nullptr, alloc, jobj, validators...);
+        }
+        else if constexpr (is_std_unique_ptr_v<T> || is_std_shared_ptr_v<T>) {
+            generate_schema<typename T::element_type>(name, title, description, alloc, schema, validators...);
         } else
             static_assert(false, "unsupported type");
     }
