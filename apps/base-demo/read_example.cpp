@@ -186,28 +186,28 @@ void print(const BaseExample& base) {
 }
 
 void polymorphic_complex_read_example() {
-    //PolymorphicExample example{};
-    //std::string error_descr{};
-    //auto code = macrojson::json_file_to_object(JSON_EXAMPLES_DIRECTORY "polymorphic_example.json", example, error_descr);
-    //if (code != macrojson::MJsonErrorCode::E_MJSON_OK) {
-    //    std::cerr << "Error reading PolymorphicExample from JSON." << std::endl;
-    //    if (!error_descr.empty()) {
-    //        std::cerr << error_descr << std::endl;
-    //    }
-    //    return;
-    //}
+    PolymorphicExample example{};
+    std::string error_descr{};
+    auto code = macrojson::json_file_to_object(JSON_EXAMPLES_DIRECTORY "polymorphic_example.json", example, error_descr);
+    if (code != macrojson::MJsonErrorCode::E_MJSON_OK) {
+       std::cerr << "Error reading PolymorphicExample from JSON." << std::endl;
+       if (!error_descr.empty()) {
+           std::cerr << error_descr << std::endl;
+       }
+       return;
+    }
 
-    //std::cout << "polymorphic_complex_read_example" << std::endl;
-    //std::cout << "Deserialized JSON:" << std::endl;
-    //if (example.plm_attr) {
-    //    std::cout << "plm_attr: " << std::endl;
-    //    print(*example.plm_attr);
-    //}
+    std::cout << "polymorphic_complex_read_example" << std::endl;
+    std::cout << "Deserialized JSON:" << std::endl;
+    if (example.plm_attr) {
+       std::cout << "plm_attr: " << std::endl;
+       print(*example.plm_attr);
+    }
 
-    //std::cout << "plm_arr size = " << example.plm_arr.size() << std::endl;
-    //std::cout << "plm_arr: " << std::endl;
-    //for (const auto& item : example.plm_arr) {
-    //    print(*item);
-    //}
-    //std::cout << std::endl;
+    std::cout << "plm_arr size = " << example.plm_arr.size() << std::endl;
+    std::cout << "plm_arr: " << std::endl;
+    for (const auto& item : example.plm_arr) {
+       print(*item);
+    }
+    std::cout << std::endl;
 }

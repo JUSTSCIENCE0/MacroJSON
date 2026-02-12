@@ -149,8 +149,14 @@ MJSON_POLYMORPHIC_OBJECT_BEGIN(
 MJSON_POLYMORPHIC_OBJECT_END()
 #undef MJSON_BASE_OBJECT_NAME
 
-//MJSON_OBJECT_BEGIN(PolymorphicExample)
-//    MJSON_FIELD(std::unique_ptr<BaseExample>, plm_attr)
-//    MJSON_FIELD(std::vector<
-//        std::unique_ptr<BaseExample>>, plm_arr)
-//MJSON_OBJECT_END(PolymorphicExample)
+MJSON_OBJECT_BEGIN(PolymorphicExample,
+        "Polymorphic Example",
+        "An example object that contains polymorphic objects as attributes")
+   MJSON_FIELD(std::unique_ptr<BaseExample>, plm_attr,
+        "Polymorphic Attribute",
+        "A polymorphic object attribute")
+   MJSON_FIELD(std::vector<
+       std::unique_ptr<BaseExample>>, plm_arr,
+        "Polymorphic Array Attribute",
+        "An array of polymorphic object attributes")
+MJSON_OBJECT_END(PolymorphicExample)
