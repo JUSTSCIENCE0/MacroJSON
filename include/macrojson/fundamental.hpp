@@ -53,6 +53,14 @@ namespace macrojson {
     template<typename T> struct is_std_vector : std::false_type {};
     template<typename U> struct is_std_vector<std::vector<U>> : std::true_type {};
     template<typename T> inline constexpr bool is_std_vector_v = is_std_vector<T>::value;
+    // trait to detect std::unique_ptr<T>
+    template<typename T> struct is_std_unique_ptr : std::false_type {};
+    template<typename U> struct is_std_unique_ptr<std::unique_ptr<U>> : std::true_type {};
+    template<typename T> inline constexpr bool is_std_unique_ptr_v = is_std_unique_ptr<T>::value;
+    // trait to detect std::shared_ptr<T>
+    template<typename T> struct is_std_shared_ptr : std::false_type {};
+    template<typename U> struct is_std_shared_ptr<std::shared_ptr<U>> : std::true_type {};
+    template<typename T> inline constexpr bool is_std_shared_ptr_v = is_std_shared_ptr<T>::value;
 
     // Fundamental types writers
     static inline void write_to_json(
