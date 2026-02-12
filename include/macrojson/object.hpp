@@ -42,6 +42,7 @@
         type field{};
 
 #define MJSON_BASE_OBJECT_END() \
+        ~MJSON_BASE_OBJECT_NAME() = default; \
     };
 
 #define MJSON_DERIVED_OBJECT_BEGIN(obj_name, type_enumerator) \
@@ -52,6 +53,7 @@
         type field{};
 
 #define MJSON_DERIVED_OBJECT_END(obj_name) \
+        ~obj_name() = default; \
     };
 
 #define MJSON_POLYMORPHIC_OBJECT_END()
