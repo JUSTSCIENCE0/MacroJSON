@@ -103,7 +103,11 @@ namespace macrojson {
             const char* name, const char* title, const char* description,
             Document::AllocatorType& alloc, Value& schema,
             Validators... validators) {
-        if constexpr (is_std_optional_v<T>) {
+        if constexpr (std::is_same_v<T, std::string>) {
+            generate_schema_base(name, title, description, "string", alloc, schema);
+            Value& jobj = name ? schema[name] : schema;
+            add_validation_fields<std::string>(alloc, jobj, validators...);
+        } else if constexpr (is_std_optional_v<T>) {
             generate_schema<typename T::value_type>(name, title, description, alloc, schema, validators...);
         }
         else if constexpr (is_std_vector_v<T>) {

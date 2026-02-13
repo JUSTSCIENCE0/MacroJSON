@@ -17,6 +17,7 @@
 #include <optional>
 #include <memory>
 #include <type_traits>
+#include <limits>
 
 #include <fstream>
 #include <filesystem>
@@ -147,6 +148,67 @@ namespace macrojson {
     template<typename T>
     MJsonErrorCode read_from_json(const char* name, const Value& root, std::optional<T>& val);
 
+    // Fundamental types validators
+    // validation descriptions
+    struct StringRegex {
+        std::string pattern = "";
+    };
+    struct StringLength {
+        int minLength = -1;
+        int maxLength = -1;
+    };
+    template<typename NUM,
+             std::enable_if_t<std::is_arithmetic_v<NUM>, bool> = true>
+    struct MultipleOf {
+        NUM multipleOf{};
+    };
+    template<typename NUM,
+             std::enable_if_t<std::is_arithmetic_v<NUM>, bool> = true>
+    struct Range {
+        NUM minimum = std::numeric_limits<NUM>::min();
+        bool isExclusiveMinimum = false;
+        NUM maximum = std::numeric_limits<NUM>::max();
+        bool isExclusiveMaximum = false;
+    };
+    struct ArrayParams {
+        int minItems = 0;
+        int maxItems = -1;
+        bool uniqueItems = false;
+    };
+
+    // Fundamental types schemas validation fields
+    template<typename T>
+    void add_validation_fields(Document::AllocatorType&, Value&) {}
+
+    template<typename T, typename... Validators>
+    void add_validation_fields(
+            Document::AllocatorType& alloc, Value& schema, Validators... validators);
+
+    template<
+        typename T,
+        typename... Validators,
+        std::enable_if_t<std::is_same_v<T, std::string>, bool> = true>
+    void add_validation_fields(
+            Document::AllocatorType& alloc, Value& obj, const StringRegex& regex, Validators... validators) {
+        Value jregexp;
+        jregexp.SetString(regex.pattern.c_str(), alloc);
+        obj.AddMember("pattern", jregexp, alloc);
+
+        add_validation_fields<T>(alloc, obj, validators...);
+    }
+
+    template<
+        typename T,
+        typename... Validators,
+        std::enable_if_t<std::is_same_v<T, std::string>, bool> = true>
+    void add_validation_fields(
+            Document::AllocatorType& alloc, Value& obj, const StringLength& regex, Validators... validators) {
+        obj.AddMember("minLength", regex.minLength, alloc);
+        obj.AddMember("maxLength", regex.maxLength, alloc);
+
+        add_validation_fields<T>(alloc, obj, validators...);
+    }
+
     // Fundamental types schemas
     template<typename T, typename... Validators>
     void generate_schema(
@@ -182,34 +244,6 @@ namespace macrojson {
             jtype.SetString(type, alloc);
             jobj.AddMember("type", jtype, alloc);
         }
-    }
-
-    template<>
-    inline void generate_schema<std::string>(
-            const char* name, const char* title, const char* description,
-            Document::AllocatorType& alloc, Value& schema) {
-        generate_schema_base(name, title, description, "string", alloc, schema);
-    }
-
-    template<>
-    inline void generate_schema<std::string, const char*>(
-            const char* name, const char* title, const char* description,
-            Document::AllocatorType& alloc, Value& schema, const char* regexp) {
-        generate_schema<std::string>(name, title, description, alloc, schema);
-        Value& jobj = name ? schema[name] : schema;
-        Value jregexp;
-        jregexp.SetString(regexp, alloc);
-        jobj.AddMember("pattern", jregexp, alloc);
-    }
-
-    template<>
-    inline void generate_schema<std::string, int, int>(
-            const char* name, const char* title, const char* description,
-            Document::AllocatorType& alloc, Value& schema, int minLength, int maxLength) {
-        generate_schema<std::string>(name, title, description, alloc, schema);
-        Value& jobj = name ? schema[name] : schema;
-        jobj.AddMember("minLength", minLength, alloc);
-        jobj.AddMember("maxLength", maxLength, alloc);
     }
 
     template<
@@ -263,7 +297,4 @@ namespace macrojson {
             jobj.AddMember("maximum", maximum, alloc);
         }
     }
-
-    // Fundamental types validators
-    // TODO
 }
