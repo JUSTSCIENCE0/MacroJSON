@@ -209,6 +209,39 @@ namespace macrojson {
         add_validation_fields<T>(alloc, obj, validators...);
     }
 
+    template<
+        typename NUM,
+        typename... Validators,
+        std::enable_if_t<std::is_arithmetic_v<NUM>, bool> = true>
+    void add_validation_fields(
+            Document::AllocatorType& alloc, Value& obj, const MultipleOf<NUM>& multipleOf, Validators... validators) {
+        obj.AddMember("multipleOf", multipleOf.multipleOf, alloc);
+
+        add_validation_fields<NUM>(alloc, obj, validators...);
+    }
+
+    template<
+        typename NUM,
+        typename... Validators,
+        std::enable_if_t<std::is_arithmetic_v<NUM>, bool> = true>
+    void add_validation_fields(
+            Document::AllocatorType& alloc, Value& obj, const Range<NUM>& range, Validators... validators) {
+        if (range.isExclusiveMinimum) {
+            obj.AddMember("exclusiveMinimum", range.minimum, alloc);
+        }
+        else {
+            obj.AddMember("minimum", range.minimum, alloc);
+        }
+        if (range.isExclusiveMaximum) {
+            obj.AddMember("exclusiveMaximum", range.maximum, alloc);
+        }
+        else {
+            obj.AddMember("maximum", range.maximum, alloc);
+        }
+
+        add_validation_fields<NUM>(alloc, obj, validators...);
+    }
+
     // Fundamental types schemas
     template<typename T, typename... Validators>
     void generate_schema(
@@ -260,41 +293,6 @@ namespace macrojson {
         }
         else {
             static_assert(false, "unsupported type");
-        }
-    }
-
-    template<
-        typename NUM,
-        std::enable_if_t<std::is_arithmetic_v<NUM>, bool> = true>
-    inline void generate_schema(
-            const char* name, const char* title, const char* description,
-            Document::AllocatorType& alloc, Value& schema,
-            NUM multipleOf) {
-        generate_schema<NUM>(name, title, description, alloc, schema);
-        Value& jobj = name ? schema[name] : schema;
-        jobj.AddMember("multipleOf", multipleOf, alloc);
-    }
-
-    template<
-        typename NUM,
-        std::enable_if_t<std::is_arithmetic_v<NUM>, bool> = true>
-    inline void generate_schema(
-            const char* name, const char* title, const char* description,
-            Document::AllocatorType& alloc, Value& schema,
-            NUM minimum, bool isExclusiveMinimum, NUM maximum, bool isExclusiveMaximum) {
-        generate_schema<NUM>(name, title, description, alloc, schema);
-        Value& jobj = name ? schema[name] : schema;
-        if (isExclusiveMinimum) {
-            jobj.AddMember("exclusiveMinimum", minimum, alloc);
-        }
-        else {
-            jobj.AddMember("minimum", minimum, alloc);
-        }
-        if (isExclusiveMaximum) {
-            jobj.AddMember("exclusiveMaximum", maximum, alloc);
-        }
-        else {
-            jobj.AddMember("maximum", maximum, alloc);
         }
     }
 }

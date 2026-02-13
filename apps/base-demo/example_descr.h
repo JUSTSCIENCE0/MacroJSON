@@ -9,7 +9,8 @@ MJSON_OBJECT_BEGIN(
         "A simple example object with primitive types and string")
     MJSON_FIELD(int,         i32_attr,
         "I32 Attribute",
-        "32-bit integer attribute")
+        "32-bit integer attribute",
+        macrojson::Range<int>{})
     MJSON_FIELD(double,      dbl_attr,
         "Double Attribute",
         "Double-precision floating-point attribute")
@@ -17,7 +18,8 @@ MJSON_OBJECT_BEGIN(
         "U64 Attribute",
         "64-bit unsigned integer attribute")
     MJSON_FIELD(std::string, str_attr,
-        "String Attribute", nullptr)
+        "String Attribute", nullptr,
+        macrojson::StringLength{ 1, 100 })
 MJSON_OBJECT_END(SimpleExample)
 
 MJSON_OBJECT_BEGIN(Level1Example,
