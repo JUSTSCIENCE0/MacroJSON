@@ -119,6 +119,13 @@ namespace macrojson {
         else if constexpr (is_std_vector_v<T>) {
             generate_schema_base(name, title, description, "array", alloc, schema);
             Value& jobj = name ? schema[name] : schema;
+
+            if constexpr (sizeof...(validators) > 0) {
+                if constexpr (std::is_same_v<first_type_t<Validators...>, ArrayParams>) {
+                    add_validation_fields<T>(alloc, jobj, first_value(validators...));
+                }
+            }
+
             generate_schema<typename T::value_type>("items", nullptr, nullptr, alloc, jobj, validators...);
         }
         else if constexpr (is_std_unique_ptr_v<T> || is_std_shared_ptr_v<T>) {

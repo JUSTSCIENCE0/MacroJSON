@@ -51,7 +51,8 @@ MJSON_OBJECT_BEGIN(OptionalExample,
         "An example object that contains optional attributes of various types")
    MJSON_FIELD(std::optional<int>,           i32_opt,
         "Optional I32 Attribute",
-        "An optional 32-bit integer attribute")
+        "An optional 32-bit integer attribute",
+        macrojson::Range<int>{})
    MJSON_FIELD(std::optional<double>,        dbl_opt,
         "Optional Double Attribute",
         "An optional double-precision floating-point attribute")
@@ -77,10 +78,13 @@ MJSON_OBJECT_BEGIN(ArrayExample,
         "An example object that contains arrays of various types as attributes")
    MJSON_FIELD(std::vector<int>,           i32_arr,
         "I32 Array Attribute",
-        "An array of 32-bit integer attributes")
+        "An array of 32-bit integer attributes",
+        macrojson::Range<int>{})
    MJSON_FIELD(std::vector<double>,        dbl_arr,
         "Double Array Attribute",
-        "An array of double-precision floating-point attributes")
+        "An array of double-precision floating-point attributes",
+        macrojson::ArrayParams{ 1, 100, true },
+        macrojson::Range<double>{ -1000.0, true, 1000.0, true })
    MJSON_FIELD(std::vector<uint64_t>,      u64_arr,
         "U64 Array Attribute",
         "An array of 64-bit unsigned integer attributes")

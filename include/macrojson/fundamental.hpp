@@ -62,6 +62,12 @@ namespace macrojson {
     template<typename T> struct is_std_shared_ptr : std::false_type {};
     template<typename U> struct is_std_shared_ptr<std::shared_ptr<U>> : std::true_type {};
     template<typename T> inline constexpr bool is_std_shared_ptr_v = is_std_shared_ptr<T>::value;
+    // first type in parameter pack
+    template<typename... Ts> struct first_type {};
+    template<typename T, typename... Ts> struct first_type<T, Ts...> { using type = T; };
+    template<typename... Ts> using first_type_t = typename first_type<Ts...>::type;
+    // first value in parameter pack
+    template<typename T, typename... Ts> T first_value(const T& first, const Ts&...) { return first; }
 
     // Fundamental types writers
     static inline void write_to_json(
@@ -190,9 +196,11 @@ namespace macrojson {
         std::enable_if_t<std::is_same_v<T, std::string>, bool> = true>
     void add_validation_fields(
             Document::AllocatorType& alloc, Value& obj, const StringRegex& regex, Validators... validators) {
-        Value jregexp;
-        jregexp.SetString(regex.pattern.c_str(), alloc);
-        obj.AddMember("pattern", jregexp, alloc);
+        if (!regex.pattern.empty()) {
+            Value jregexp;
+            jregexp.SetString(regex.pattern.c_str(), alloc);
+            obj.AddMember("pattern", jregexp, alloc);
+        }
 
         add_validation_fields<T>(alloc, obj, validators...);
     }
@@ -202,9 +210,13 @@ namespace macrojson {
         typename... Validators,
         std::enable_if_t<std::is_same_v<T, std::string>, bool> = true>
     void add_validation_fields(
-            Document::AllocatorType& alloc, Value& obj, const StringLength& regex, Validators... validators) {
-        obj.AddMember("minLength", regex.minLength, alloc);
-        obj.AddMember("maxLength", regex.maxLength, alloc);
+            Document::AllocatorType& alloc, Value& obj, const StringLength& strlen, Validators... validators) {
+        if (strlen.minLength >= 0) {
+            obj.AddMember("minLength", strlen.minLength, alloc);
+        }
+        if (strlen.maxLength >= 0) {
+            obj.AddMember("maxLength", strlen.maxLength, alloc);
+        }
 
         add_validation_fields<T>(alloc, obj, validators...);
     }
@@ -215,7 +227,9 @@ namespace macrojson {
         std::enable_if_t<std::is_arithmetic_v<NUM>, bool> = true>
     void add_validation_fields(
             Document::AllocatorType& alloc, Value& obj, const MultipleOf<NUM>& multipleOf, Validators... validators) {
-        obj.AddMember("multipleOf", multipleOf.multipleOf, alloc);
+        if (multipleOf.multipleOf != NUM{}) {
+            obj.AddMember("multipleOf", multipleOf.multipleOf, alloc);
+        }
 
         add_validation_fields<NUM>(alloc, obj, validators...);
     }
@@ -240,6 +254,31 @@ namespace macrojson {
         }
 
         add_validation_fields<NUM>(alloc, obj, validators...);
+    }
+
+    template<
+        typename T,
+        typename... Validators,
+        std::enable_if_t<!is_std_vector_v<T>, bool> = true>
+    void add_validation_fields(
+            Document::AllocatorType& alloc, Value& obj, const ArrayParams&, Validators... validators) {
+        add_validation_fields<T>(alloc, obj, validators...);
+    }
+
+    template<
+        typename T,
+        std::enable_if_t<is_std_vector_v<T>, bool> = true>
+    void add_validation_fields(
+            Document::AllocatorType& alloc, Value& obj, const ArrayParams& params) {
+        if (params.minItems > 0) {
+            obj.AddMember("minItems", params.minItems, alloc);
+        }
+        if (params.maxItems > 0) {
+            obj.AddMember("maxItems", params.maxItems, alloc);
+        }
+        if (params.uniqueItems) {
+            obj.AddMember("uniqueItems", params.uniqueItems, alloc);
+        }
     }
 
     // Fundamental types schemas
