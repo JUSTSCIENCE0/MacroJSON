@@ -9,7 +9,8 @@ MJSON_OBJECT_BEGIN(
         "A simple example object with primitive types and string")
     MJSON_FIELD(int,         i32_attr,
         "I32 Attribute",
-        "32-bit integer attribute")
+        "32-bit integer attribute",
+        Range<int>{})
     MJSON_FIELD(double,      dbl_attr,
         "Double Attribute",
         "Double-precision floating-point attribute")
@@ -17,7 +18,8 @@ MJSON_OBJECT_BEGIN(
         "U64 Attribute",
         "64-bit unsigned integer attribute")
     MJSON_FIELD(std::string, str_attr,
-        "String Attribute", nullptr)
+        "String Attribute", nullptr,
+        StringLength{1, 100})
 MJSON_OBJECT_END(SimpleExample)
 
 MJSON_OBJECT_BEGIN(Level1Example,
@@ -25,7 +27,8 @@ MJSON_OBJECT_BEGIN(Level1Example,
         "An example object that contains another object as an attribute")
     MJSON_FIELD(int,           i32_attr,
         "I32 Attribute",
-        "32-bit integer attribute")
+        "32-bit integer attribute",
+        Range<int>{-1000, true, 1000, true}, MultipleOf<int>{10})
     MJSON_FIELD(double,        dbl_attr,
         "Double Attribute",
         "Double-precision floating-point attribute")
@@ -38,9 +41,7 @@ MJSON_OBJECT_BEGIN(Level2Example,
     MJSON_FIELD(uint64_t,      u64_attr,
         "U64 Attribute",
         "64-bit unsigned integer attribute")
-    MJSON_FIELD(SimpleExample, smp_attr,
-        "Object Attribute",
-        "An attribute that is an object of type SimpleExample")
+    MJSON_FIELD(SimpleExample, smp_attr, nullptr, nullptr)
     MJSON_FIELD(Level1Example, lvl_attr, nullptr, nullptr)
 MJSON_OBJECT_END(Level2Example)
 
@@ -49,10 +50,13 @@ MJSON_OBJECT_BEGIN(ArrayExample,
         "An example object that contains arrays of various types as attributes")
    MJSON_FIELD(std::vector<int>,           i32_arr,
         "I32 Array Attribute",
-        "An array of 32-bit integer attributes")
+        "An array of 32-bit integer attributes",
+         Range<int>{})
    MJSON_FIELD(std::vector<double>,        dbl_arr,
         "Double Array Attribute",
-        "An array of double-precision floating-point attributes")
+        "An array of double-precision floating-point attributes",
+        ArrayParams{ 1, 100, true },
+        Range<double>{ -1000.0, true, 1000.0, true }, MultipleOf<double>{0.1})
    MJSON_FIELD(std::vector<uint64_t>,      u64_arr,
         "U64 Array Attribute",
         "An array of 64-bit unsigned integer attributes")
@@ -81,7 +85,8 @@ MJSON_OBJECT_BEGIN(OptionalExample,
         "An optional double-precision floating-point attribute")
    MJSON_FIELD(std::optional<uint64_t>,      u64_opt,
         "Optional U64 Attribute",
-        "An optional 64-bit unsigned integer attribute")
+        "An optional 64-bit unsigned integer attribute",
+         Range<uint64_t>{}, MultipleOf<uint64_t>{ 2 })
    MJSON_FIELD(std::optional<std::string>,   str_opt,
         "Optional String Attribute",
         "An optional string attribute")
@@ -92,8 +97,7 @@ MJSON_OBJECT_BEGIN(OptionalExample,
         "Optional Level1 Object Attribute",
         "An optional object of type Level1Example")
    MJSON_FIELD(std::optional<Level2Example>, lvl2_opt,
-        "Optional Level2 Object Attribute",
-        "An optional object of type Level2Example")
+        nullptr, nullptr)
 MJSON_OBJECT_END(OptionalExample)
 
 MJSON_ENUM_BEGIN(SimpleEnum,

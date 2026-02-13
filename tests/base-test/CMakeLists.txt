@@ -18,6 +18,7 @@ add_executable(${PROJECT_NAME}
     generated/test_samples.hpp
 
     ancillary.hpp
+    schema_unit_tests.cpp
     write_unit_tests.cpp
     read_unit_tests.cpp
     main.cpp
