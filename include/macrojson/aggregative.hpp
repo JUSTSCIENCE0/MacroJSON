@@ -47,7 +47,7 @@ namespace macrojson {
         val.clear();
 
         if (name && !root.HasMember(name)) {
-            return E_MJSON_NOT_EXISTS;
+            return E_MJSON_OK; // empty array if field is missing
         }
         const Value& jval = name ? root[name] : root;
         if (!jval.IsArray()) {
