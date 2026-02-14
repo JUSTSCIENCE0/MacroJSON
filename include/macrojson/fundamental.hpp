@@ -10,6 +10,7 @@
 #include <rapidjson/error/en.h>
 #include <rapidjson/istreamwrapper.h>
 #include <rapidjson/ostreamwrapper.h>
+#include <rapidjson/schema.h>
 
 #include <cstdint>
 #include <string>
@@ -42,7 +43,8 @@ namespace macrojson {
         E_MJSON_FILE_ERROR,
         E_MJSON_PARSE_FAILED,
         E_MJSON_UNKNOWN_ENUM,
-        E_MJSON_UNSUPPORTED_OBJECT_TYPE
+        E_MJSON_UNSUPPORTED_OBJECT_TYPE,
+        E_MJSON_SCHEMA_VALIDATION_FAILED
     };
 
     // helpers

@@ -111,4 +111,39 @@ namespace macrojson {
         doc.Accept(writer);
         return std::string(buffer.GetString(), buffer.GetSize());
     }
+
+    template <typename T>
+    static inline MJsonErrorCode validate_json_doc(const rapidjson::Document& doc, std::string& error_descr) {
+        if (doc.HasParseError()) {
+            error_descr = "json parse error: ";
+            error_descr += GetParseError_En(doc.GetParseError());
+            error_descr += ", error offset: ";
+            error_descr += std::to_string(doc.GetErrorOffset());
+            return E_MJSON_PARSE_FAILED;
+        }
+
+        auto schema_doc = get_json_schema_doc<T>();
+        SchemaDocument schema(schema_doc);
+        SchemaValidator validator(schema);
+        if (!doc.Accept(validator)) {
+            error_descr += "json schema validation failed: ";
+            StringBuffer buffer;
+            validator.GetInvalidSchemaPointer().StringifyUriFragment(buffer);
+            error_descr += "invalid schema: " + std::string(buffer.GetString(), buffer.GetSize());
+            error_descr += ", invalid keyword: " + std::string(validator.GetInvalidSchemaKeyword());
+            buffer.Clear();
+            validator.GetInvalidDocumentPointer().StringifyUriFragment(buffer);
+            error_descr += ", invalid document: " + std::string(buffer.GetString(), buffer.GetSize());
+            return E_MJSON_SCHEMA_VALIDATION_FAILED;
+        }
+
+        return E_MJSON_OK;
+    }
+
+    template <typename T>
+    static inline MJsonErrorCode validate_json_str(const std::string& json, std::string& error_descr) {
+        rapidjson::Document doc;
+        doc.Parse(json.c_str(), json.size());
+        return validate_json_doc<T>(doc, error_descr);
+    }
 }

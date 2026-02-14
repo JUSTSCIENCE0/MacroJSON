@@ -30,7 +30,7 @@ if (PROJECT_IS_TOP_LEVEL)
             -Wall -Wextra -Wpedantic -Wcast-align -Wcast-qual
             -Wdisabled-optimization -Wformat=2 -Winit-self 
             -Wmissing-include-dirs -Wold-style-cast -Woverloaded-virtual
-            -Wredundant-decls -Wshadow -Wsign-promo 
+            -Wredundant-decls -Wshadow
             -Wundef -Wno-variadic-macros
             -Wno-parentheses -fdiagnostics-show-option
             -Wno-gnu-zero-variadic-macro-arguments -Wno-unused-function
