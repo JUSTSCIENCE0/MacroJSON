@@ -48,7 +48,7 @@ namespace macrojson { \
                 enum_str = "unknown"; break; \
         } \
         assert(enum_str); \
-        write_to_json(name, enum_str, alloc, root); \
+        write_to_json<std::string>(name, enum_str, alloc, root); \
     } \
 }
 
