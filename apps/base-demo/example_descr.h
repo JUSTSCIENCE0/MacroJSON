@@ -148,6 +148,9 @@ MJSON_POLYMORPHIC_OBJECT_BEGIN(
         "Double-precision floating-point attribute")
     MJSON_DERIVED_OBJECT_END(Object1Example)
     MJSON_DERIVED_OBJECT_BEGIN(Object2Example, E_TYPE_OBJECT_2)
+      MJSON_DERIVED_OBJECT_FIELD(bool, bool_attr,
+        "Boolean Attribute",
+        "A boolean attribute")
       MJSON_DERIVED_OBJECT_FIELD(std::string, str_attr,
         "String Attribute",
         "A string attribute")

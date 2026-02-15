@@ -336,12 +336,17 @@ void check_polymorphic_example_schema(const rapidjson::Value& schema) {
     const auto& alt2_type = get_field(alt2_properties, "type");
     check_str_param(alt2_type, "const", "object2");
 
+    const auto& bool_attr = get_field(alt2_properties, "bool_attr");
+    check_title(bool_attr, "Boolean Attribute");
+    check_description(bool_attr, "A boolean attribute");
+    check_type(bool_attr, "boolean");
+
     const auto& str_attr = get_field(alt2_properties, "str_attr");
     check_title(str_attr, "String Attribute");
     check_description(str_attr, "A string attribute");
     check_type(str_attr, "string");
 
-    check_required_fields(alt2, {"type", "str_attr"});
+    check_required_fields(alt2, {"type", "bool_attr", "str_attr"});
 }
 
 TEST(SchemaTests, SimpleExampleSchema) {

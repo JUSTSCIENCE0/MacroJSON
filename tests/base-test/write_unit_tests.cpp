@@ -154,6 +154,7 @@ TEST(WriterTests, PolymorphicExampleTest) {
     auto& obj2 = static_cast<Object2Example&>(*example2);
     obj2.i32_attr = 20;
     obj2.flt_attr = 2.5f;
+    obj2.bool_attr = false;
     obj2.str_attr = "Polymorphic Object 2";
     rapidjson::Document doc2;
     doc2.SetObject();

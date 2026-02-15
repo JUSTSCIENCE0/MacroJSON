@@ -1,5 +1,6 @@
 # Supported Data Types
 
+- Boolean type - `bool`
 - Numeric types:
   - `int32_t`
   - `uint32_t`

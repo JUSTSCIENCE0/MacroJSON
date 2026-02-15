@@ -155,6 +155,7 @@ void polymorphic_simple_write_example() {
     auto e2_ptr = static_cast<Object2Example*>(example2.get());
     e2_ptr->i32_attr = 123;
     e2_ptr->flt_attr = 4.56f;
+    e2_ptr->bool_attr = true;
     e2_ptr->str_attr = "example 2";
     std::string json2{};
     macrojson::object_to_json_str(example2, json2);
@@ -183,6 +184,7 @@ void polymorphic_complex_write_example() {
     auto e2_ptr = static_cast<Object2Example*>(example.plm_arr.back().get());
     e2_ptr->i32_attr = 222;
     e2_ptr->flt_attr = 2.22f;
+    e2_ptr->bool_attr = false;
     e2_ptr->str_attr = "example in array";
 
     std::string json{};

@@ -99,6 +99,8 @@ namespace macrojson {
         write_to_json(name, std::move(jval), alloc, root); \
     }
 
+    JSON_WRITER(bool, SetBool)
+
     JSON_WRITER(int32_t,  SetInt)
     JSON_WRITER(int64_t,  SetInt64)
     JSON_WRITER(uint32_t, SetUint)
@@ -141,6 +143,7 @@ namespace macrojson {
     }
 
     JSON_READER(std::string, IsString, GetString)
+    JSON_READER(bool,        IsBool,   GetBool)
     JSON_READER(int32_t,     IsInt,    GetInt)
     JSON_READER(int64_t,     IsInt64,  GetInt64)
     JSON_READER(uint32_t,    IsUint,   GetUint)
@@ -326,7 +329,9 @@ namespace macrojson {
     inline void generate_schema(
             const char* name, const char* title, const char* description,
             Document::AllocatorType& alloc, Value& schema) {
-        if constexpr (std::is_floating_point_v<NUM>) {
+        if constexpr (std::is_same_v<NUM, bool>) {
+            generate_schema_base(name, title, description, "boolean", alloc, schema);
+        } else if constexpr (std::is_floating_point_v<NUM>) {
             generate_schema_base(name, title, description, "number", alloc, schema);
         }
         else if constexpr (std::is_integral_v<NUM>) {

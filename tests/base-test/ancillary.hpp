@@ -201,6 +201,9 @@ static void check_object(const Object2Example& example, const rapidjson::Value& 
     ASSERT_TRUE(obj.IsObject());
     check_object(static_cast<const BaseExample&>(example), obj);
     ASSERT_EQ(example.type, E_TYPE_OBJECT_2);
+    ASSERT_TRUE(obj.HasMember("bool_attr"));
+    ASSERT_TRUE(obj["bool_attr"].IsBool());
+    EXPECT_EQ(example.bool_attr, obj["bool_attr"].GetBool());
     ASSERT_TRUE(obj.HasMember("str_attr"));
     ASSERT_TRUE(obj["str_attr"].IsString());
     EXPECT_EQ(example.str_attr, obj["str_attr"].GetString());

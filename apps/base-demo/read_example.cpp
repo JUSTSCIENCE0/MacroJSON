@@ -136,6 +136,7 @@ void print(const Object2Example& o2) {
     std::cout << "Deserialized Object2Example JSON:" << std::endl;
     std::cout << "\ti32_attr = " << o2.i32_attr << std::endl;
     std::cout << "\tflt_attr = " << o2.flt_attr << std::endl;
+    std::cout << "\tbool_attr = " << o2.bool_attr << std::endl;
     std::cout << "\tstr_attr = " << o2.str_attr << std::endl;
 }
 

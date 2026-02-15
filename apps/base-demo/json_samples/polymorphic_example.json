@@ -18,6 +18,7 @@
       "type": "object2",
       "i32_attr": 222,
       "flt_attr": 2.2200000286102295,
+      "bool_attr": true,
       "str_attr": "example in array"
     }
   ]

@@ -210,6 +210,7 @@ TEST(ReaderTests, PolymorphicExampleTest) {
         "type": "object2",
         "i32_attr": 123,
         "flt_attr": 4.559999942779541,
+        "bool_attr": true,
         "str_attr": "example 2"
     })";
     rapidjson::Document doc2;
