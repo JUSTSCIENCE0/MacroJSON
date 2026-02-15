@@ -75,5 +75,55 @@ int main() {
     macrojson::object_to_json_str(person_out, person_json);
     std::cout << "Person JSON:\n" << person_json << std::endl;
 
+    // Polymorphic objects examples
+    std::cout << "Polymorphic objects examples:" << std::endl;
+
+    // single object
+    std::shared_ptr<Vehicle> car = std::make_shared<Car>();
+    auto car_ptr = static_cast<Car*>(car.get());
+    car_ptr->id = 1001;
+    car_ptr->model = "Toyota Corolla";
+    car_ptr->doors = 4;
+    car_ptr->fuel_type = "gasoline";
+    std::string car_json = "";
+    macrojson::object_to_json_str(car, car_json);
+    std::cout << "Car JSON:\n" << car_json << std::endl;
+
+    // complex object
+    auto products_schema = macrojson::get_json_schema_str<Products>();
+    std::cout << "Products schema:\n" << products_schema << std::endl;
+
+    const char* products_example = R"({
+    "products": [
+        {
+            "type": "car",
+            "id": 1001,
+            "model": "Toyota Corolla",
+            "doors": 4,
+            "fuel_type": "gasoline"
+        },
+        {
+            "type": "motorcycle",
+            "id": 1002,
+            "model": "Harley-Davidson Street 750",
+            "engine_size": 750
+        },
+        {
+            "type": "truck",
+            "id": 1003,
+            "model": "Ford F-150",
+            "payload_capacity": 1000,
+            "cab_type": "crew"
+        }
+    ]})";
+
+    Products products{};
+    error_descr = "";
+    err_code = macrojson::json_str_to_object(products_example, products, error_descr);
+    if (err_code != macrojson::E_MJSON_OK) {
+        std::cerr << "Failed to parse JSON: " << error_descr << std::endl;
+        return -1;
+    }
+
     return 0;
 }
