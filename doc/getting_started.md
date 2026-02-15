@@ -79,7 +79,7 @@ auto person_schema = macrojson::get_json_schema_str<Person>();
 std::cout << "Person JSON Schema:\n" << person_schema << std::endl;
 ```
 <details>
-<summary>Вывод</summary>
+<summary>Output</summary>
 
 ```json
 {
