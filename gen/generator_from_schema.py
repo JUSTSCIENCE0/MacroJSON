@@ -99,9 +99,14 @@ def parse_schema_object(root : dict, objects : list) -> str:
             field_descr["type"] = "double"
         if obj_type == "string":
             field_descr["type"] = "std::string"
+            # TODO: enum
         if obj_type == "object":
             field_descr["type"] = parse_schema_object(descr, objects)
-        # TODO: array, enum
+        if obj_type == "array":
+            items_type = descr["items"]["type"]
+            if items_type == "object":
+                items_type = parse_schema_object(descr["items"], objects)
+            field_descr["type"] = f"std::vector<{items_type}>"
         object_descr["fields"].append(field_descr)
 
     for descr in objects:
@@ -123,7 +128,7 @@ def generate_code(objects: list) -> str:
         result += f'        {obj["description"]})\n'
         for field in obj["fields"]:
             field_type = field["type"]
-            if field["optional"]:
+            if field["optional"] and not field_type.startswith('std::vector'):
                 field_type = f'std::optional<{field_type}>'
             result += f'    MJSON_FIELD({field_type}, {field["name"]},\n'
             result += f'        {field["title"]},\n'
