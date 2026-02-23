@@ -105,6 +105,38 @@ def parse_schema_enum(enum : dict, objects : list) -> str:
     objects.append(enum_descr)
     return identifier
 
+def parse_schema_field(name: str, descr: dict, optional: bool, objects : list) -> dict:
+    field_descr = {
+        "name": name,
+        "title": get_title(descr),
+        "description": get_description(descr),
+        "optional": optional
+    }
+    obj_type = descr.get("type")
+    if obj_type == "boolean":
+        field_descr["type"] = "bool"
+    if obj_type == "integer":
+        field_descr["type"] = inference_integer_type(descr)
+    if obj_type == "number":
+        field_descr["type"] = "double"
+    if obj_type == "string":
+        if "enum" not in descr:
+            field_descr["type"] = "std::string"
+        else:
+            field_descr["type"] = parse_schema_enum(descr, objects)
+    if obj_type == "object":
+        field_descr["type"] = parse_schema_object(descr, objects)
+    if obj_type == "array":
+        items_type = descr["items"]["type"]
+        if items_type == "object":
+            items_type = parse_schema_object(descr["items"], objects)
+        if items_type == "string" and "enum" in descr["items"]:
+            items_type = parse_schema_enum(descr["items"], objects)
+        field_descr["type"] = f"std::vector<{items_type}>"
+
+    return field_descr
+
+
 def parse_schema_object(root : dict, objects : list) -> str:
     global g_objects_counter
     g_objects_counter += 1
@@ -124,33 +156,7 @@ def parse_schema_object(root : dict, objects : list) -> str:
 
     for name, descr in props.items():
         optional = name not in required
-        field_descr = {
-            "name": name,
-            "title": get_title(descr),
-            "description": get_description(descr),
-            "optional": optional
-        }
-        obj_type = descr.get("type")
-        if obj_type == "boolean":
-            field_descr["type"] = "bool"
-        if obj_type == "integer":
-            field_descr["type"] = inference_integer_type(descr)
-        if obj_type == "number":
-            field_descr["type"] = "double"
-        if obj_type == "string":
-            if "enum" not in descr:
-                field_descr["type"] = "std::string"
-            else:
-                field_descr["type"] = parse_schema_enum(descr, objects)
-        if obj_type == "object":
-            field_descr["type"] = parse_schema_object(descr, objects)
-        if obj_type == "array":
-            items_type = descr["items"]["type"]
-            if items_type == "object":
-                items_type = parse_schema_object(descr["items"], objects)
-            if items_type == "string" and "enum" in descr["items"]:
-                items_type = parse_schema_enum(descr["items"], objects)
-            field_descr["type"] = f"std::vector<{items_type}>"
+        field_descr = parse_schema_field(name, descr, optional, objects)
         object_descr["fields"].append(field_descr)
 
     # check exists object
