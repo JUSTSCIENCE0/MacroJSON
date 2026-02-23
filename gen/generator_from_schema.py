@@ -66,6 +66,32 @@ def inference_integer_type(descr : dict) -> str:
         result = "u" + result
     return result
 
+def unique_identifier(identifier : str, objects : list) -> str:
+    global g_objects_counter
+
+    collision = False
+
+    for descr in objects:
+        if descr["type"] == "object" or descr["type"] == "enum":
+            if descr["identifier"] == identifier:
+                collision = True
+                break
+        elif descr["type"] == "polymorphic_object":
+            if descr["base"]["identifier"] == identifier:
+                collision = True
+                break
+            for der_obj in descr["derived"]:
+                if der_obj["identifier"] == identifier:
+                    collision = True
+                    break
+            if collision:
+                break
+
+    result = identifier
+    if collision:
+        result += str(g_objects_counter)
+    return result
+
 def parse_schema_enum(enum : dict, objects : list) -> str:
     global g_objects_counter
     g_objects_counter += 1
@@ -95,12 +121,7 @@ def parse_schema_enum(enum : dict, objects : list) -> str:
         if descr["type"] == "enum" and descr["units"] == enum_descr["units"]:
             return descr["identifier"]
 
-    # check exists identifier
-    for descr in objects:
-        if descr["identifier"] == identifier:
-            identifier += str(g_objects_counter)
-            break
-
+    identifier = unique_identifier(identifier, objects)
     enum_descr["identifier"] = identifier
     objects.append(enum_descr)
     return identifier
@@ -136,8 +157,96 @@ def parse_schema_field(name: str, descr: dict, optional: bool, objects : list) -
 
     return field_descr
 
+def find_enum_description(identifier : str, objects : list) -> dict:
+    for obj in objects:
+        if obj["type"] == "enum" and obj["identifier"] == identifier:
+            return obj
+
+def find_unit_name_in_enum_description(short_name : str, enum_descr : dict) -> str:
+    for unit in enum_descr["units"]:
+        if unit["short_name"] == short_name:
+            return unit["name"]
+
+def parse_schema_polymorphic_object(root : dict, objects : list) -> str:
+    global g_objects_counter
+    g_objects_counter += 1
+
+    base_object_identifier = title_to_identifier(root.get("title", "Polymorphic Object") + " Base")
+    base_object_identifier = unique_identifier(base_object_identifier, objects)
+
+    title = get_title(root)
+    descr_text = get_description(root)
+    identifier = title_to_identifier(title)
+    object_descr = {
+        "type": "polymorphic_object",
+        "number": g_objects_counter,
+        "title": title,
+        "description": descr_text,
+        "base": {
+            "identifier": base_object_identifier,
+            "types_enum": "",
+            "fields": []
+        },
+        "derived": []
+    }
+
+    # parse base object fields
+    props, required = get_properties(root)
+    for name, descr in props.items():
+        optional = name not in required
+        field_descr = parse_schema_field(name, descr, optional, objects)
+        object_descr["base"]["fields"].append(field_descr)
+
+    # parse types enum and derived objects
+    types_enum = {
+        "title": root.get("title", "Polymorphic Object") + " Types",
+        "enum": []
+    }
+
+    derived_objects_counter = 0
+    for derived in root["oneOf"]:
+        der_props, der_required = get_properties(derived)
+        if "type" not in der_props or "type" not in der_required:
+            continue
+        if "const" not in der_props["type"]:
+            continue
+        type_enum_unit_short_name = der_props["type"]["const"]
+        types_enum["enum"].append(type_enum_unit_short_name)
+
+        derived_objects_counter += 1
+        der_identifier = title_to_identifier(
+            root.get("title", "Polymorphic Object") + " " + type_enum_unit_short_name)
+        der_identifier = unique_identifier(der_identifier, objects)
+        der_object_descr = {
+            "identifier": der_identifier,
+            "enumerator": type_enum_unit_short_name,
+            "fields": []
+        }
+        for der_name, der_descr in der_props.items():
+            if der_name == "type":
+                continue
+            optional = der_name not in der_required
+            der_field_descr = parse_schema_field(der_name, der_descr, optional, objects)
+            der_object_descr["fields"].append(der_field_descr)
+        object_descr["derived"].append(der_object_descr)
+
+    # generate enum description
+    types_enum_name = parse_schema_enum(types_enum, objects)
+    object_descr["base"]["types_enum"] = types_enum_name
+    types_enum_descr = find_enum_description(types_enum_name, objects)
+
+    # resolve derived type enumerators
+    for der in object_descr["derived"]:
+        der["enumerator"] = find_unit_name_in_enum_description(der["enumerator"], types_enum_descr)
+
+    objects.append(object_descr)
+    return base_object_identifier
 
 def parse_schema_object(root : dict, objects : list) -> str:
+    if "oneOf" in root:
+        base_object_type = parse_schema_polymorphic_object(root, objects)
+        return f'std::shared_ptr<{base_object_type}>'
+
     global g_objects_counter
     g_objects_counter += 1
 
@@ -164,12 +273,7 @@ def parse_schema_object(root : dict, objects : list) -> str:
         if descr["type"] == "object" and descr["fields"] == object_descr["fields"]:
             return descr["identifier"]
 
-    # check exists identifier
-    for descr in objects:
-        if descr["identifier"] == identifier:
-            identifier += str(g_objects_counter)
-            break
-
+    identifier = unique_identifier(identifier, objects)
     object_descr["identifier"] = identifier
     objects.append(object_descr)
     return identifier
@@ -199,6 +303,34 @@ def generate_code(objects: list) -> str:
             for unit in obj["units"]:
                 result += f'    MJSON_ENUM_UNIT({unit["name"]}, {unit["short_name"]})\n'
             result += f'MJSON_ENUM_END({obj["identifier"]})\n\n'
+        elif obj["type"] == "polymorphic_object":
+            result += f'#define MJSON_BASE_OBJECT_NAME {obj["base"]["identifier"]}\n'
+            result += f'MJSON_POLYMORPHIC_OBJECT_BEGIN(\n'
+            result += f'        {obj["title"]},\n'
+            result += f'        {obj["description"]})\n'
+            result += f'    MJSON_BASE_OBJECT_BEGIN({obj["base"]["types_enum"]})\n'
+            for field in obj["base"]["fields"]:
+                field_type = field["type"]
+                if field["optional"] and not field_type.startswith('std::vector'):
+                    field_type = f'std::optional<{field_type}>'
+                result += f'      MJSON_BASE_OBJECT_FIELD({field_type}, {field["name"]},\n'
+                result += f'        {field["title"]},\n'
+                result += f'        {field["description"]}'
+                result += f')\n'
+            result += f'    MJSON_BASE_OBJECT_END()\n'
+            for derived in obj["derived"]:
+                result += f'    MJSON_DERIVED_OBJECT_BEGIN({derived["identifier"]}, {derived["enumerator"]})\n'
+                for field in derived["fields"]:
+                    field_type = field["type"]
+                    if field["optional"] and not field_type.startswith('std::vector'):
+                        field_type = f'std::optional<{field_type}>'
+                    result += f'      MJSON_DERIVED_OBJECT_FIELD({field_type}, {field["name"]},\n'
+                    result += f'        {field["title"]},\n'
+                    result += f'        {field["description"]}'
+                    result += f')\n'
+                result += f'    MJSON_DERIVED_OBJECT_END({derived["identifier"]})\n'
+            result += f'MJSON_POLYMORPHIC_OBJECT_END()\n'
+            result += f'#undef MJSON_BASE_OBJECT_NAME\n\n'
 
     return result
 
