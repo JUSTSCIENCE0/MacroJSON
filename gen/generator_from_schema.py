@@ -54,6 +54,97 @@ def find_unit_name_in_enum_description(short_name : str, enum_descr : dict) -> s
             return unit["name"]
     raise ValueError(f"Error: Unit name '{short_name} not found in enum description.")
 
+def generate_object_name(objects_amount : int) -> str:
+    return f"Object{objects_amount}"
+
+def title_to_identifier(title : str, objects_amount : int) -> str:
+    if title == 'nullptr':
+        return generate_object_name(objects_amount)
+
+    name = re.sub(r'[^a-zA-Z0-9 ]', '', title)
+    words = name.split()
+    object_name = ''.join(word.capitalize() for word in words)
+    if not object_name:
+        return generate_object_name(objects_amount)
+    if object_name[0].isdigit():
+        object_name = 'Obj' + object_name
+    return object_name
+
+# parsers
+class BaseParser:
+    def __init__(self, root: dict, objects_list: list):
+        self.title = get_title(get_title(root))
+        self.description = get_description(root)
+
+    def parse_field(self, name: str, root: dict, is_optional: bool, objects_list: list) -> dict:
+        field_descr = {
+            "name": name,
+            "title": get_title(root),
+            "description": get_description(root),
+            "optional": is_optional
+        }
+        obj_type = root.get("type")
+        if obj_type == "boolean":
+            field_descr["type"] = "bool"
+        if obj_type == "integer":
+            field_descr["type"] = inference_integer_type(root)
+        if obj_type == "number":
+            field_descr["type"] = "double"
+        if obj_type == "string":
+            if "enum" not in root:
+                field_descr["type"] = "std::string"
+            # else:
+            #     field_descr["type"] = self.parse_schema_enum(root)
+        if obj_type == "object":
+            obj = ObjectParser(root, objects_list)
+            field_descr["type"] = obj.identifier
+        if obj_type == "array":
+            items_type = root["items"]["type"]
+            if items_type == "object":
+                obj = ObjectParser(root["items"], objects_list)
+                items_type = obj.identifier
+            # if items_type == "string" and "enum" in root["items"]:
+            #     items_type = self.parse_schema_enum(root["items"])
+            field_descr["type"] = f"std::vector<{items_type}>"
+
+        return field_descr
+
+    def make_unique_identifier(self, objects_list: list) -> str:
+        for obj in objects_list:
+            if obj.is_identifier_collision(self.identifier):
+                self.identifier += str(len(objects_list))
+                break
+
+class ObjectParser(BaseParser):
+    def __init__(self, root: dict, objects_list: list):
+        self.type = "object"
+        super().__init__(root, objects_list)
+        self.fields = []
+
+        props, required = get_properties(root)
+        for name, descr in props.items():
+            optional = name not in required
+            field_descr = self.parse_field(name, descr, optional, objects_list)
+            self.fields.append(field_descr)
+
+        for obj in objects_list:
+            if self.is_same(obj):
+                self.identifier = obj.identifier
+                return
+
+        self.identifier = title_to_identifier(self.title, len(objects_list))
+        self.make_unique_identifier()
+        objects_list.append(self)
+
+    def is_same(self, other) -> bool:
+        if isinstance(other, ObjectParser):
+            return self.fields == other.fields
+        return False
+
+    def is_identifier_collision(self, identifier: str) -> bool:
+        return self.identifier == identifier
+
+
 # main class
 class Generator:
     def __init__(self, schema_file: str):
@@ -76,22 +167,6 @@ class Generator:
         print(self.objects)
         code = self.generate_code()
         print(code)
-
-    def generate_object_name(self) -> str:
-        return f"Object{self.objects_counter}"
-
-    def title_to_identifier(self, title : str) -> str:
-        if title == 'nullptr':
-            return self.generate_object_name()
-
-        name = re.sub(r'[^a-zA-Z0-9 ]', '', title)
-        words = name.split()
-        object_name = ''.join(word.capitalize() for word in words)
-        if not object_name:
-            return self.generate_object_name()
-        if object_name[0].isdigit():
-            object_name = 'Obj' + object_name
-        return object_name
 
     def unique_identifier(self, identifier : str) -> str:
         collision = False
@@ -124,7 +199,7 @@ class Generator:
 
         title = get_title(enum)
         descr_text = get_description(enum)
-        identifier = self.title_to_identifier(title)
+        identifier = title_to_identifier(title, len(self.objects))
 
         enum_descr = {
             "type": "enum",
@@ -192,12 +267,12 @@ class Generator:
     def parse_schema_polymorphic_object(self, root : dict) -> str:
         self.objects_counter += 1
 
-        base_object_identifier = self.title_to_identifier(root.get("title", "Polymorphic Object") + " Base")
+        base_object_identifier = title_to_identifier(root.get("title", "Polymorphic Object") + " Base", len(self.objects))
         base_object_identifier = self.unique_identifier(base_object_identifier)
 
         title = get_title(root)
         descr_text = get_description(root)
-        identifier = self.title_to_identifier(title)
+        identifier = title_to_identifier(title, len(self.objects))
         object_descr = {
             "type": "polymorphic_object",
             "number": self.objects_counter,
@@ -235,8 +310,10 @@ class Generator:
             types_enum["enum"].append(type_enum_unit_short_name)
 
             derived_objects_counter += 1
-            der_identifier = self.title_to_identifier(
-                root.get("title", "Polymorphic Object") + " " + type_enum_unit_short_name)
+            der_identifier = title_to_identifier(
+                root.get("title", "Polymorphic Object") + " " + type_enum_unit_short_name,
+                len(self.objects)
+            )
             der_identifier = self.unique_identifier(der_identifier)
             der_object_descr = {
                 "identifier": der_identifier,
@@ -276,7 +353,7 @@ class Generator:
         props, required = get_properties(root)
         title = get_title(root)
         descr_text = get_description(root)
-        identifier = self.title_to_identifier(title)
+        identifier = title_to_identifier(title, len(self.objects))
         object_descr = {
             "type": "object",
             "identifier": "",
