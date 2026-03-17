@@ -109,11 +109,13 @@ class BaseParser:
 
         return field_descr
 
-    def make_unique_identifier(self, objects_list: list) -> str:
+    @staticmethod
+    def make_unique_identifier(identifier, objects_list: list) -> str:
         for obj in objects_list:
-            if obj.is_identifier_collision(self.identifier):
-                self.identifier += str(len(objects_list))
+            if obj.is_identifier_collision(identifier):
+                identifier += str(len(objects_list))
                 break
+        return identifier
 
 class ObjectParser(BaseParser):
     def __init__(self, root: dict, objects_list: list):
@@ -133,7 +135,7 @@ class ObjectParser(BaseParser):
                 return
 
         self.identifier = title_to_identifier(self.title, len(objects_list))
-        self.make_unique_identifier()
+        self.identifier = self.make_unique_identifier(self.identifier, objects_list)
         objects_list.append(self)
 
     def is_same(self, other) -> bool:
@@ -144,6 +146,111 @@ class ObjectParser(BaseParser):
     def is_identifier_collision(self, identifier: str) -> bool:
         return self.identifier == identifier
 
+class EnumParser(BaseParser):
+    def __init__(self: dict, root, objects_list: list):
+        self.type = "enum"
+        super().__init__(root, objects_list)
+        self.units = []
+
+        self.identifier = title_to_identifier(self.title, len(objects_list))
+
+        for unit in root["units"]:
+            unit_descr = {
+                "name": "E_" + self.identifier.upper() + "_" + unit.upper(),
+                "short_name": unit
+            }
+            self.units.append(unit_descr)
+
+        for obj in objects_list:
+            if self.is_same(obj):
+                self.identifier = obj.identifier
+                return
+
+        self.identifier = self.make_unique_identifier(self.identifier, objects_list)
+        objects_list.append(self)
+
+    def is_same(self, other) -> bool:
+        if isinstance(other, EnumParser):
+            return self.units == other.units
+
+    def is_identifier_collision(self, identifier: str) -> bool:
+        return self.identifier == identifier
+
+class PolymorphicObjectParser(BaseParser):
+    def __init__(self, root: dict, objects_list: list):
+        self.type = "polymorphic_object"
+        super().__init__(root, objects_list)
+
+        base_object_identifier = title_to_identifier(root.get("title", "Polymorphic Object") + " Base", len(objects_list))
+        base_object_identifier = self.make_unique_identifier(base_object_identifier, objects_list)
+
+        # parse base object fields
+        self.base = {
+            "identifier": base_object_identifier,
+            "types_enum": "",
+            "fields": []
+        }
+        props, required = get_properties(root)
+        for name, descr in props.items():
+            optional = name not in required
+            field_descr = self.parse_field(name, descr, optional, objects_list)
+            self.base["fields"].append(field_descr)
+
+        # parse types enum and derived objects
+        types_enum = {
+            "title": root.get("title", "Polymorphic Object") + " Types",
+            "enum": []
+        }
+        self.derived = []
+        for derived in root["oneOf"]:
+            der_props, der_required = get_properties(derived)
+            if "type" not in der_props or "type" not in der_required:
+                continue
+            if "const" not in der_props["type"]:
+                continue
+            type_enum_unit_short_name = der_props["type"]["const"]
+            types_enum["enum"].append(type_enum_unit_short_name)
+
+            der_identifier = title_to_identifier(
+                root.get("title", "Polymorphic Object") + " " + type_enum_unit_short_name,
+                len(objects_list)
+            )
+            der_identifier = self.make_unique_identifier(der_identifier, objects_list)
+            der_object_descr = {
+                "identifier": der_identifier,
+                "enumerator": type_enum_unit_short_name,
+                "fields": []
+            }
+            for der_name, der_descr in der_props.items():
+                if der_name == "type":
+                    continue
+                optional = der_name not in der_required
+                der_field_descr = self.parse_field(der_name, der_descr, optional, objects_list)
+                der_object_descr["fields"].append(der_field_descr)
+            self.derived.append(der_object_descr)
+
+            # checkpoint
+
+            # generate enum description
+            types_enum_name = self.parse_schema_enum(types_enum)
+            object_descr["base"]["types_enum"] = types_enum_name
+            types_enum_descr = self.find_enum_description(types_enum_name)
+
+            # resolve derived type enumerators
+            for der in object_descr["derived"]:
+                der["enumerator"] = find_unit_name_in_enum_description(der["enumerator"], types_enum_descr)
+
+            # TODO: check exists object
+
+            self.objects.append(object_descr)
+            #return base_object_identifier
+
+    @staticmethod
+    def find_enum_description(identifier : str, objects_list: list) -> dict:
+        for obj in objects_list:
+            if isinstance(obj, EnumParser) and obj.identifier == identifier:
+                return obj
+        return None
 
 # main class
 class Generator:
