@@ -8,109 +8,102 @@ import sys
 import json
 import re
 
-# helpers
-def get_properties(descr : dict) -> tuple[dict, set]:
-    properties = descr.get("properties", {})
-    required = descr.get("required", [])
-    required = set(required)
-    return properties, required
-
-def get_title(descr : dict) -> str:
-    title = descr.get("title", None)
-    if not title:
-        return 'nullptr'
-    return f'"{title}"'
-
-def get_description(descr : dict) -> str:
-    description = descr.get("description", None)
-    if not description:
-        return 'nullptr'
-    return f'"{description}"'
-
-def inference_integer_type(descr : dict) -> str:
-    is_signed = True
-    is_64 = False
-    min_i32 = -2**31
-    max_i32 = 2**31 - 1
-    min_val = descr.get("minimum", 
-                        descr.get("exclusiveMinimum", min_i32))
-    max_val = descr.get("maximum", 
-                        descr.get("exclusiveMaximum", max_i32))
-    if min_val < min_i32 or max_val > max_i32:
-        is_64 = True
-    if min_val >= 0:
-        is_signed = False
-    if is_64:
-        result = "int64_t"
-    else:
-        result = "int32_t"
-    if not is_signed:
-        result = "u" + result
-    return result
-
-def generate_object_name(objects_amount : int) -> str:
-    return f"Object{objects_amount}"
-
-def title_to_identifier(title : str, objects_amount : int) -> str:
-    if title == 'nullptr':
-        return generate_object_name(objects_amount)
-
-    name = re.sub(r'[^a-zA-Z0-9 ]', '', title)
-    words = name.split()
-    object_name = ''.join(word.capitalize() for word in words)
-    if not object_name:
-        return generate_object_name(objects_amount)
-    if object_name[0].isdigit():
-        object_name = 'Obj' + object_name
-    return object_name
-
-def determine_object(root: dict, objects_list: list) -> str:
-    if "oneOf" in root:
-        obj = PolymorphicObjectParser(root, objects_list)
-        return obj.base["identifier"]
-    else:
-        obj = ObjectParser(root, objects_list)
-        return obj.identifier
-
-def determine_string(root: dict, objects_list: list) -> str:
-    if "enum" not in root:
-        return "std::string"
-    enum_obj = EnumParser(root, objects_list)
-    return enum_obj.identifier
-
 # parsers
 class BaseParser:
     def __init__(self, root: dict, objects_list: list):
-        self.title = get_title(root)
-        self.description = get_description(root)
+        self.title = self.get_title(root)
+        self.description = self.get_description(root)
 
     def parse_field(self, name: str, root: dict, is_optional: bool, objects_list: list) -> dict:
         field_descr = {
             "name": name,
-            "title": get_title(root),
-            "description": get_description(root),
+            "title": self.get_title(root),
+            "description": self.get_description(root),
             "optional": is_optional
         }
         obj_type = root.get("type")
         if obj_type == "boolean":
             field_descr["type"] = "bool"
         if obj_type == "integer":
-            field_descr["type"] = inference_integer_type(root)
+            field_descr["type"] = self.inference_integer_type(root)
         if obj_type == "number":
             field_descr["type"] = "double"
         if obj_type == "string":
-            field_descr["type"] = determine_string(root, objects_list)
+            field_descr["type"] = self.determine_string(root, objects_list)
         if obj_type == "object":
-            field_descr["type"] = determine_object(root, objects_list)
+            field_descr["type"] = self.determine_object(root, objects_list)
         if obj_type == "array":
             items_type = root["items"]["type"]
             if items_type == "object":
-                items_type = determine_object(root["items"], objects_list)
+                items_type = self.determine_object(root["items"], objects_list)
             if items_type == "string":
-                items_type = determine_string(root["items"], objects_list)
+                items_type = self.determine_string(root["items"], objects_list)
             field_descr["type"] = f"std::vector<{items_type}>"
 
         return field_descr
+
+    # helpers
+
+    @staticmethod
+    def get_properties(descr : dict) -> tuple[dict, set]:
+        properties = descr.get("properties", {})
+        required = descr.get("required", [])
+        required = set(required)
+        return properties, required
+
+    @staticmethod
+    def get_title(descr : dict) -> str:
+        title = descr.get("title", None)
+        if not title:
+            return 'nullptr'
+        return f'"{title}"'
+
+    @staticmethod
+    def get_description(descr : dict) -> str:
+        description = descr.get("description", None)
+        if not description:
+            return 'nullptr'
+        return f'"{description}"'
+
+    @staticmethod
+    def generate_object_name(objects_amount : int) -> str:
+        return f"Object{objects_amount}"
+
+    @staticmethod
+    def title_to_identifier(title : str, objects_amount : int) -> str:
+        if title == 'nullptr':
+            return BaseParser.generate_object_name(objects_amount)
+
+        name = re.sub(r'[^a-zA-Z0-9 ]', '', title)
+        words = name.split()
+        object_name = ''.join(word.capitalize() for word in words)
+        if not object_name:
+            return BaseParser.generate_object_name(objects_amount)
+        if object_name[0].isdigit():
+            object_name = 'Obj' + object_name
+        return object_name
+
+    @staticmethod
+    def inference_integer_type(descr : dict) -> str:
+        is_signed = True
+        is_64 = False
+        min_i32 = -2**31
+        max_i32 = 2**31 - 1
+        min_val = descr.get("minimum", 
+                            descr.get("exclusiveMinimum", min_i32))
+        max_val = descr.get("maximum", 
+                            descr.get("exclusiveMaximum", max_i32))
+        if min_val < min_i32 or max_val > max_i32:
+            is_64 = True
+        if min_val >= 0:
+            is_signed = False
+        if is_64:
+            result = "int64_t"
+        else:
+            result = "int32_t"
+        if not is_signed:
+            result = "u" + result
+        return result
 
     @staticmethod
     def make_unique_identifier(identifier, objects_list: list) -> str:
@@ -120,13 +113,29 @@ class BaseParser:
                 break
         return identifier
 
+    @staticmethod
+    def determine_string(root: dict, objects_list: list) -> str:
+        if "enum" not in root:
+            return "std::string"
+        enum_obj = EnumParser(root, objects_list)
+        return enum_obj.identifier
+
+    @staticmethod
+    def determine_object(root: dict, objects_list: list) -> str:
+        if "oneOf" in root:
+            obj = PolymorphicObjectParser(root, objects_list)
+            return obj.base["identifier"]
+        else:
+            obj = ObjectParser(root, objects_list)
+            return obj.identifier
+
 class ObjectParser(BaseParser):
     def __init__(self, root: dict, objects_list: list):
         self.type = "object"
         super().__init__(root, objects_list)
         self.fields = []
 
-        props, required = get_properties(root)
+        props, required = self.get_properties(root)
         for name, descr in props.items():
             optional = name not in required
             field_descr = self.parse_field(name, descr, optional, objects_list)
@@ -137,7 +146,7 @@ class ObjectParser(BaseParser):
                 self.identifier = obj.identifier
                 return
 
-        self.identifier = title_to_identifier(self.title, len(objects_list))
+        self.identifier = self.title_to_identifier(self.title, len(objects_list))
         self.identifier = self.make_unique_identifier(self.identifier, objects_list)
         objects_list.append(self)
 
@@ -170,7 +179,7 @@ class EnumParser(BaseParser):
         super().__init__(root, objects_list)
         self.units = []
 
-        self.identifier = title_to_identifier(self.title, len(objects_list))
+        self.identifier = self.title_to_identifier(self.title, len(objects_list))
 
         for unit in root["enum"]:
             unit_descr = {
@@ -209,7 +218,7 @@ class PolymorphicObjectParser(BaseParser):
         self.type = "polymorphic_object"
         super().__init__(root, objects_list)
 
-        base_object_identifier = title_to_identifier(root.get("title", "Polymorphic Object") + " Base", len(objects_list))
+        base_object_identifier = self.title_to_identifier(root.get("title", "Polymorphic Object") + " Base", len(objects_list))
         base_object_identifier = self.make_unique_identifier(base_object_identifier, objects_list)
 
         # parse base object fields
@@ -218,7 +227,7 @@ class PolymorphicObjectParser(BaseParser):
             "types_enum": "",
             "fields": []
         }
-        props, required = get_properties(root)
+        props, required = self.get_properties(root)
         for name, descr in props.items():
             optional = name not in required
             field_descr = self.parse_field(name, descr, optional, objects_list)
@@ -231,7 +240,7 @@ class PolymorphicObjectParser(BaseParser):
         }
         self.derived = []
         for derived in root["oneOf"]:
-            der_props, der_required = get_properties(derived)
+            der_props, der_required = self.get_properties(derived)
             if "type" not in der_props or "type" not in der_required:
                 continue
             if "const" not in der_props["type"]:
@@ -239,7 +248,7 @@ class PolymorphicObjectParser(BaseParser):
             type_enum_unit_short_name = der_props["type"]["const"]
             types_enum["enum"].append(type_enum_unit_short_name)
 
-            der_identifier = title_to_identifier(
+            der_identifier = self.title_to_identifier(
                 root.get("title", "Polymorphic Object") + " " + type_enum_unit_short_name,
                 len(objects_list)
             )
@@ -380,7 +389,7 @@ class Generator:
         self.objects_counter = 0
 
     def generate_header(self, output_dir: str):
-        root_obj = determine_object(self.json_schema, self.objects)
+        root_obj = BaseParser.determine_object(self.json_schema, self.objects)
         for obj in self.objects:
             print(vars(obj))
         code = self.generate_code()
