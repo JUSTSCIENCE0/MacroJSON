@@ -15,35 +15,20 @@ class BaseParser:
         self.description = self.get_description(root)
 
     def parse_field(self, name: str, root: dict, is_optional: bool, objects_list: list) -> dict:
+        field_validators = []
+        field_type = self.determine_type(root, field_validators, objects_list)
         field_descr = {
             "name": name,
+            "type": field_type,
             "title": self.get_title(root),
             "description": self.get_description(root),
-            "optional": is_optional
+            "optional": is_optional,
+            "validators": field_validators
         }
-        obj_type = root.get("type")
-        if obj_type == "boolean":
-            field_descr["type"] = "bool"
-        if obj_type == "integer":
-            field_descr["type"] = self.inference_integer_type(root)
-        if obj_type == "number":
-            field_descr["type"] = "double"
-        if obj_type == "string":
-            field_descr["type"] = self.determine_string(root, objects_list)
-        if obj_type == "object":
-            field_descr["type"] = self.determine_object(root, objects_list)
-        if obj_type == "array":
-            items_type = root["items"]["type"]
-            if items_type == "object":
-                items_type = self.determine_object(root["items"], objects_list)
-            if items_type == "string":
-                items_type = self.determine_string(root["items"], objects_list)
-            field_descr["type"] = f"std::vector<{items_type}>"
 
         return field_descr
 
     # helpers
-
     @staticmethod
     def get_properties(descr : dict) -> tuple[dict, set]:
         properties = descr.get("properties", {})
@@ -84,7 +69,13 @@ class BaseParser:
         return object_name
 
     @staticmethod
-    def inference_integer_type(descr : dict) -> str:
+    def inference_numeric_type(descr : dict) -> str:
+        if descr["type"] == "number":
+            return "double"
+
+        if descr["type"] != "integer":
+            raise ValueError(f"Unexpected type {descr['type']}")
+
         is_signed = True
         is_64 = False
         min_i32 = -2**31
@@ -113,6 +104,31 @@ class BaseParser:
                 break
         return identifier
 
+    # determinators
+    @staticmethod
+    def determine_type(root: dict, validators: list, objects_list: list) -> str:
+        obj_type = root.get("type")
+        if obj_type == "boolean":
+            return "bool"
+        if obj_type == "integer" or obj_type == "number":
+            res_type = BaseParser.inference_numeric_type(root)
+            BaseParser.parse_num_range(root, res_type, validators)
+            BaseParser.parse_num_multiplier(root, res_type, validators)
+            return res_type
+        if obj_type == "string":
+            res_type = BaseParser.determine_string(root, objects_list)
+            if res_type == "std::string":
+                BaseParser.parse_str_pattern_validator(root, validators)
+                BaseParser.parse_str_length_validator(root, validators)
+            return res_type
+        if obj_type == "object":
+            return BaseParser.determine_object(root, objects_list)
+        if obj_type == "array":
+            BaseParser.parse_array_validator(root, validators)
+            res_type = BaseParser.determine_type(root["items"], validators, objects_list)
+            return f"std::vector<{res_type}>"
+        raise ValueError(f"Unknown type: {obj_type}")
+
     @staticmethod
     def determine_string(root: dict, objects_list: list) -> str:
         if "enum" not in root:
@@ -128,6 +144,56 @@ class BaseParser:
         else:
             obj = ObjectParser(root, objects_list)
             return obj.identifier
+
+    # validators
+    @staticmethod
+    def parse_str_pattern_validator(root: dict, validators: list):
+        if "pattern" in root:
+            validators.append('macrojson::StringRegex{ R"(' + root["pattern"] + ')" }')
+
+    @staticmethod
+    def parse_str_length_validator(root: dict, validators: list):
+        if "minLength" in root or "maxLength" in root:
+            min_length = root.get("minLength", -1)
+            max_length = root.get("maxLength", -1)
+            validators.append('macrojson::StringLength{ ' +
+                str(min_length) +', ' + str(max_length) + ' }')
+
+    @staticmethod
+    def parse_array_validator(root: dict, validators: list):
+        if ("minItems" in root or
+            "maxItems" in root or
+            "uniqueItems" in root):
+            min_items = root.get("minItems", 0)
+            max_items = root.get("maxItems", -1)
+            unique_items = root.get("uniqueItems", False)
+            unique_items = str(unique_items).lower()
+            validators.append('macrojson::ArrayParams{ ' +
+                str(min_items) + ', ' + str(max_items) + ', ' + unique_items + ' }')
+
+    @staticmethod
+    def parse_num_multiplier(root: dict, num_type: str, validators: list):
+        if "multipleOf" in root:
+            validators.append('macrojson::MultipleOf<' + num_type +
+                    '>{ ' + str(root["multipleOf"]) + ' }')
+
+    @staticmethod
+    def parse_num_range(root: dict, num_type: str, validators: list):
+        if ("minimum" in root or
+            "exclusiveMinimum" in root or
+            "maximum" in root or
+            "exclusiveMaximum" in root):
+            min_val = root.get("minimum",
+                      root.get("exclusiveMinimum",
+                    f"std::numeric_limits<{num_type}>::min()"))
+            max_val = root.get("maximum",
+                      root.get("exclusiveMaximum",
+                    f"std::numeric_limits<{num_type}>::max()"))
+            is_exclusive_min = str("exclusiveMinimum" in root).lower()
+            is_exclusive_max = str("exclusiveMaximum" in root).lower()
+            validators.append('macrojson::Range<' + num_type + '>{ ' +
+                    str(min_val) + ', ' + is_exclusive_min + ', ' +
+                    str(max_val) + ', ' + is_exclusive_max + ' }')
 
 class ObjectParser(BaseParser):
     def __init__(self, root: dict, objects_list: list):
@@ -169,6 +235,8 @@ class ObjectParser(BaseParser):
             result += f'    MJSON_FIELD({field_type}, {field["name"]},\n'
             result += f'        {field["title"]},\n'
             result += f'        {field["description"]}'
+            for validator in field["validators"]:
+                result += f',\n        {validator}'
             result += f')\n'
         result += f'MJSON_OBJECT_END({self.identifier})\n\n'
         return result
@@ -354,6 +422,8 @@ class PolymorphicObjectParser(BaseParser):
             result += f'      MJSON_BASE_OBJECT_FIELD({field_type}, {field["name"]},\n'
             result += f'        {field["title"]},\n'
             result += f'        {field["description"]}'
+            for validator in field["validators"]:
+                result += f',\n        {validator}'
             result += f')\n'
         result += f'    MJSON_BASE_OBJECT_END()\n'
         for derived in self.derived:
@@ -365,6 +435,8 @@ class PolymorphicObjectParser(BaseParser):
                 result += f'      MJSON_DERIVED_OBJECT_FIELD({field_type}, {field["name"]},\n'
                 result += f'        {field["title"]},\n'
                 result += f'        {field["description"]}'
+                for validator in field["validators"]:
+                    result += f',\n        {validator}'
                 result += f')\n'
             result += f'    MJSON_DERIVED_OBJECT_END({derived["identifier"]})\n'
         result += f'MJSON_POLYMORPHIC_OBJECT_END()\n'
