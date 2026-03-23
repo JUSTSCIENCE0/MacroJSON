@@ -463,6 +463,7 @@ class Generator:
     def generate_header(self, output_file: str):
         BaseParser.determine_object(self.json_schema, self.objects)
         code = self.generate_code()
+        os.makedirs(os.path.dirname(output_file), exist_ok=True)
         with open(output_file, 'w') as f:
             f.write(code)
 
