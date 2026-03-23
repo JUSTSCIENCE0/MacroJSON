@@ -1,0 +1,37 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "http://example.com/schemas/enum_example.json",
+    "title": "Enum Example",
+    "description": "An example object that contains an enum attribute",
+    "type": "object",
+    "properties": {
+        "enum_attr": {
+            "title": "Simple Enum",
+            "description": "A simple example enum with unit, value, and alias enumerators",
+            "type": "string",
+            "enum": [
+                "ONE",
+                "TWO",
+                "THREE"
+            ]
+        },
+        "enum_arr": {
+            "title": "Enum Array Attribute",
+            "description": "An array of enum attributes",
+            "type": "array",
+            "items": {
+                "title": "Simple Enum",
+                "description": "A simple example enum with unit, value, and alias enumerators",
+                "type": "string",
+                "enum": [
+                    "ONE",
+                    "TWO",
+                    "THREE"
+                ]
+            }
+        }
+    },
+    "required": [
+        "enum_attr"
+    ]
+}

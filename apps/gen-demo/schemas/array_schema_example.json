@@ -1,0 +1,269 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "http://example.com/schemas/array_example.json",
+    "title": "Array Example",
+    "description": "An example object that contains arrays of various types as attributes",
+    "type": "object",
+    "properties": {
+        "i32_arr": {
+            "title": "I32 Array Attribute",
+            "description": "An array of 32-bit integer attributes",
+            "type": "array",
+            "items": {
+                "type": "integer",
+                "minimum": -2147483648,
+                "maximum": 2147483647
+            }
+        },
+        "dbl_arr": {
+            "title": "Double Array Attribute",
+            "description": "An array of double-precision floating-point attributes",
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 100,
+            "uniqueItems": true,
+            "items": {
+                "type": "number",
+                "exclusiveMinimum": -1000.0,
+                "exclusiveMaximum": 1000.0
+            }
+        },
+        "u64_arr": {
+            "title": "U64 Array Attribute",
+            "description": "An array of 64-bit unsigned integer attributes",
+            "type": "array",
+            "items": {
+                "type": "integer"
+            }
+        },
+        "str_arr": {
+            "title": "String Array Attribute",
+            "description": "An array of string attributes",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "smp_arr": {
+            "title": "Object Array Attribute",
+            "description": "An array of objects of type SimpleExample",
+            "type": "array",
+            "items": {
+                "title": "Simple Example",
+                "description": "A simple example object with primitive types and string",
+                "type": "object",
+                "properties": {
+                    "i32_attr": {
+                        "title": "I32 Attribute",
+                        "description": "32-bit integer attribute",
+                        "type": "integer",
+                        "minimum": -2147483648,
+                        "maximum": 2147483647
+                    },
+                    "dbl_attr": {
+                        "title": "Double Attribute",
+                        "description": "Double-precision floating-point attribute",
+                        "type": "number"
+                    },
+                    "u64_attr": {
+                        "title": "U64 Attribute",
+                        "description": "64-bit unsigned integer attribute",
+                        "type": "integer"
+                    },
+                    "str_attr": {
+                        "title": "String Attribute",
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 100
+                    }
+                },
+                "required": [
+                    "i32_attr",
+                    "dbl_attr",
+                    "u64_attr",
+                    "str_attr"
+                ]
+            }
+        },
+        "lvl1_arr": {
+            "title": "Level1 Object Array Attribute",
+            "description": "An array of objects of type Level1Example",
+            "type": "array",
+            "items": {
+                "title": "Level 1 Example",
+                "description": "An example object that contains another object as an attribute",
+                "type": "object",
+                "properties": {
+                    "i32_attr": {
+                        "title": "I32 Attribute",
+                        "description": "32-bit integer attribute",
+                        "type": "integer"
+                    },
+                    "dbl_attr": {
+                        "title": "Double Attribute",
+                        "description": "Double-precision floating-point attribute",
+                        "type": "number"
+                    },
+                    "obj_attr": {
+                        "title": "Simple Example",
+                        "description": "A simple example object with primitive types and string",
+                        "type": "object",
+                        "properties": {
+                            "i32_attr": {
+                                "title": "I32 Attribute",
+                                "description": "32-bit integer attribute",
+                                "type": "integer",
+                                "minimum": -2147483648,
+                                "maximum": 2147483647
+                            },
+                            "dbl_attr": {
+                                "title": "Double Attribute",
+                                "description": "Double-precision floating-point attribute",
+                                "type": "number"
+                            },
+                            "u64_attr": {
+                                "title": "U64 Attribute",
+                                "description": "64-bit unsigned integer attribute",
+                                "type": "integer"
+                            },
+                            "str_attr": {
+                                "title": "String Attribute",
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 100
+                            }
+                        },
+                        "required": [
+                            "i32_attr",
+                            "dbl_attr",
+                            "u64_attr",
+                            "str_attr"
+                        ]
+                    }
+                },
+                "required": [
+                    "i32_attr",
+                    "dbl_attr",
+                    "obj_attr"
+                ]
+            }
+        },
+        "lvl2_arr": {
+            "title": "Level2 Object Array Attribute",
+            "description": "An array of objects of type Level2Example",
+            "type": "array",
+            "items": {
+                "title": "Level 2 Example",
+                "description": "An example object that contains two levels of nested objects as attributes",
+                "type": "object",
+                "properties": {
+                    "u64_attr": {
+                        "title": "U64 Attribute",
+                        "description": "64-bit unsigned integer attribute",
+                        "type": "integer"
+                    },
+                    "smp_attr": {
+                        "title": "Object Attribute",
+                        "description": "An attribute that is an object of type SimpleExample",
+                        "type": "object",
+                        "properties": {
+                            "i32_attr": {
+                                "title": "I32 Attribute",
+                                "description": "32-bit integer attribute",
+                                "type": "integer",
+                                "minimum": -2147483648,
+                                "maximum": 2147483647
+                            },
+                            "dbl_attr": {
+                                "title": "Double Attribute",
+                                "description": "Double-precision floating-point attribute",
+                                "type": "number"
+                            },
+                            "u64_attr": {
+                                "title": "U64 Attribute",
+                                "description": "64-bit unsigned integer attribute",
+                                "type": "integer"
+                            },
+                            "str_attr": {
+                                "title": "String Attribute",
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 100
+                            }
+                        },
+                        "required": [
+                            "i32_attr",
+                            "dbl_attr",
+                            "u64_attr",
+                            "str_attr"
+                        ]
+                    },
+                    "lvl_attr": {
+                        "title": "Level 1 Example",
+                        "description": "An example object that contains another object as an attribute",
+                        "type": "object",
+                        "properties": {
+                            "i32_attr": {
+                                "title": "I32 Attribute",
+                                "description": "32-bit integer attribute",
+                                "type": "integer"
+                            },
+                            "dbl_attr": {
+                                "title": "Double Attribute",
+                                "description": "Double-precision floating-point attribute",
+                                "type": "number"
+                            },
+                            "obj_attr": {
+                                "title": "Simple Example",
+                                "description": "A simple example object with primitive types and string",
+                                "type": "object",
+                                "properties": {
+                                    "i32_attr": {
+                                        "title": "I32 Attribute",
+                                        "description": "32-bit integer attribute",
+                                        "type": "integer",
+                                        "minimum": -2147483648,
+                                        "maximum": 2147483647
+                                    },
+                                    "dbl_attr": {
+                                        "title": "Double Attribute",
+                                        "description": "Double-precision floating-point attribute",
+                                        "type": "number"
+                                    },
+                                    "u64_attr": {
+                                        "title": "U64 Attribute",
+                                        "description": "64-bit unsigned integer attribute",
+                                        "type": "integer"
+                                    },
+                                    "str_attr": {
+                                        "title": "String Attribute",
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 100
+                                    }
+                                },
+                                "required": [
+                                    "i32_attr",
+                                    "dbl_attr",
+                                    "u64_attr",
+                                    "str_attr"
+                                ]
+                            }
+                        },
+                        "required": [
+                            "i32_attr",
+                            "dbl_attr",
+                            "obj_attr"
+                        ]
+                    }
+                },
+                "required": [
+                    "u64_attr",
+                    "smp_attr",
+                    "lvl_attr"
+                ]
+            }
+        }
+    },
+    "required": []
+}

@@ -1,0 +1,151 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "http://example.com/schemas/polymorphic_complex_example.json",
+    "title": "Polymorphic Example",
+    "description": "An example object that contains polymorphic objects as attributes",
+    "type": "object",
+    "properties": {
+        "plm_attr": {
+            "title": "Polymorphic Attribute",
+            "description": "A polymorphic object attribute",
+            "type": "object",
+            "properties": {
+                "i32_attr": {
+                    "title": "I32 Attribute",
+                    "description": "32-bit integer attribute",
+                    "type": "integer"
+                },
+                "flt_attr": {
+                    "title": "Float Attribute",
+                    "description": "Single-precision floating-point attribute",
+                    "type": "number"
+                }
+            },
+            "required": [
+                "i32_attr",
+                "flt_attr"
+            ],
+            "oneOf": [
+                {
+                    "properties": {
+                        "type": {
+                            "const": "object1"
+                        },
+                        "u64_attr": {
+                            "title": "U64 Attribute",
+                            "description": "64-bit unsigned integer attribute",
+                            "type": "integer"
+                        },
+                        "dbl_attr": {
+                            "title": "Double Attribute",
+                            "description": "Double-precision floating-point attribute",
+                            "type": "number"
+                        }
+                    },
+                    "required": [
+                        "type",
+                        "u64_attr",
+                        "dbl_attr"
+                    ]
+                },
+                {
+                    "properties": {
+                        "type": {
+                            "const": "object2"
+                        },
+                        "bool_attr": {
+                            "title": "Boolean Attribute",
+                            "description": "A boolean attribute",
+                            "type": "boolean"
+                        },
+                        "str_attr": {
+                            "title": "String Attribute",
+                            "description": "A string attribute",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "type",
+                        "bool_attr",
+                        "str_attr"
+                    ]
+                }
+            ]
+        },
+        "plm_arr": {
+            "title": "Polymorphic Array Attribute",
+            "description": "An array of polymorphic object attributes",
+            "type": "array",
+            "items": {
+                "title": "Polymorphic object example",
+                "description": "An example of a polymorphic object with a type discriminator enum and two derived object types",
+                "type": "object",
+                "properties": {
+                    "i32_attr": {
+                        "title": "I32 Attribute",
+                        "description": "32-bit integer attribute",
+                        "type": "integer"
+                    },
+                    "flt_attr": {
+                        "title": "Float Attribute",
+                        "description": "Single-precision floating-point attribute",
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "i32_attr",
+                    "flt_attr"
+                ],
+                "oneOf": [
+                    {
+                        "properties": {
+                            "type": {
+                                "const": "object1"
+                            },
+                            "u64_attr": {
+                                "title": "U64 Attribute",
+                                "description": "64-bit unsigned integer attribute",
+                                "type": "integer"
+                            },
+                            "dbl_attr": {
+                                "title": "Double Attribute",
+                                "description": "Double-precision floating-point attribute",
+                                "type": "number"
+                            }
+                        },
+                        "required": [
+                            "type",
+                            "u64_attr",
+                            "dbl_attr"
+                        ]
+                    },
+                    {
+                        "properties": {
+                            "type": {
+                                "const": "object2"
+                            },
+                            "bool_attr": {
+                                "title": "Boolean Attribute",
+                                "description": "A boolean attribute",
+                                "type": "boolean"
+                            },
+                            "str_attr": {
+                                "title": "String Attribute",
+                                "description": "A string attribute",
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "type",
+                            "bool_attr",
+                            "str_attr"
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+    "required": [
+        "plm_attr"
+    ]
+}
