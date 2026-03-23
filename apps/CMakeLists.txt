@@ -7,3 +7,4 @@ cmake_minimum_required(VERSION 3.22)
 
 add_subdirectory(base-demo)
 add_subdirectory(doc-demo)
+add_subdirectory(gen-demo)
