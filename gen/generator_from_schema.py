@@ -460,12 +460,11 @@ class Generator:
         self.objects = []
         self.objects_counter = 0
 
-    def generate_header(self, output_dir: str):
-        root_obj = BaseParser.determine_object(self.json_schema, self.objects)
-        for obj in self.objects:
-            print(vars(obj))
+    def generate_header(self, output_file: str):
+        BaseParser.determine_object(self.json_schema, self.objects)
         code = self.generate_code()
-        print(code)
+        with open(output_file, 'w') as f:
+            f.write(code)
 
     def find_enum_description(self, identifier : str) -> dict:
         for obj in self.objects:
@@ -482,13 +481,14 @@ class Generator:
         return result
 
 def main():
-    if len(sys.argv) < 1:
-        print("Usage: python gen/generator_from_schema.py <schema_file>")
+    if len(sys.argv) <= 2:
+        print("Usage: python gen/generator_from_schema.py <schema_file> <output_file>")
         return -1
 
     schema_file = sys.argv[1]
+    output_file = sys.argv[2]
     generator = Generator(schema_file)
-    generator.generate_header(None)
+    generator.generate_header(output_file)
 
     return 0
 
