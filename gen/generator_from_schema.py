@@ -8,6 +8,9 @@ import sys
 import json
 import re
 
+min_i32 = -2**31
+max_i32 = 2**31 - 1
+
 # parsers
 class BaseParser:
     def __init__(self, root: dict, objects_list: list):
@@ -78,8 +81,6 @@ class BaseParser:
 
         is_signed = True
         is_64 = False
-        min_i32 = -2**31
-        max_i32 = 2**31 - 1
         min_val = descr.get("minimum", 
                             descr.get("exclusiveMinimum", min_i32))
         max_val = descr.get("maximum", 
@@ -186,9 +187,13 @@ class BaseParser:
             min_val = root.get("minimum",
                       root.get("exclusiveMinimum",
                     f"std::numeric_limits<{num_type}>::min()"))
+            if min_val == min_i32:
+                min_val = "std::numeric_limits<int32_t>::min()"
             max_val = root.get("maximum",
                       root.get("exclusiveMaximum",
                     f"std::numeric_limits<{num_type}>::max()"))
+            if max_val == max_i32:
+                max_val = "std::numeric_limits<int32_t>::max()"
             is_exclusive_min = str("exclusiveMinimum" in root).lower()
             is_exclusive_max = str("exclusiveMaximum" in root).lower()
             validators.append('macrojson::Range<' + num_type + '>{ ' +
