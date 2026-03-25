@@ -14,12 +14,16 @@ macrojson_parse_schema(
 )
 
 add_executable(${PROJECT_NAME}
+    generated/array_example.hpp
+
+    array_example.cpp
     main.cpp
 )
 
 target_include_directories(${PROJECT_NAME}
     PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}/
+        ${CMAKE_CURRENT_LIST_DIR}/generated/
 )
 
 target_link_libraries(${PROJECT_NAME}

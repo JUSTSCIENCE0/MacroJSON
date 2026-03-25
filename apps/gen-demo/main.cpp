@@ -3,6 +3,9 @@
 //
 // License: MIT
 
+void array_demo();
+
 int main() {
+    array_demo();
     return 0;
 }
