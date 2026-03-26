@@ -25,14 +25,22 @@ macrojson_parse_schema(
     TRUE
 )
 
+macrojson_parse_schema(
+    schemas/polymorphic_complex_schema_example.json
+    polymorphic_complex_example.hpp
+    TRUE
+)
+
 add_executable(${PROJECT_NAME}
     generated/array_example.hpp
     generated/enum_example.hpp
     generated/polymorphic_simple_example.hpp
+    generated/polymorphic_complex_example.hpp
 
     array_example.cpp
     enum_example.cpp
     polymorphic_simple_example.cpp
+    polymorphic_complex_example.cpp
     main.cpp
 )
 
