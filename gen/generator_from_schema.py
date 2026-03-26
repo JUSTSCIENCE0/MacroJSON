@@ -141,7 +141,8 @@ class BaseParser:
     def determine_object(root: dict, objects_list: list) -> str:
         if "oneOf" in root:
             obj = PolymorphicObjectParser(root, objects_list)
-            return obj.base["identifier"]
+            result = 'std::unique_ptr<' + obj.base["identifier"] + '>'
+            return result
         else:
             obj = ObjectParser(root, objects_list)
             return obj.identifier
