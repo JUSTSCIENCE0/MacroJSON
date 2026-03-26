@@ -5,9 +5,11 @@
 
 void array_demo();
 void enum_demo();
+void polymorphic_simple_demo();
 
 int main() {
     array_demo();
     enum_demo();
+    polymorphic_simple_demo();
     return 0;
 }
