@@ -13,10 +13,18 @@ macrojson_parse_schema(
     TRUE
 )
 
+macrojson_parse_schema(
+    schemas/enum_schema_example.json
+    enum_example.hpp
+    TRUE
+)
+
 add_executable(${PROJECT_NAME}
     generated/array_example.hpp
+    generated/enum_example.hpp
 
     array_example.cpp
+    enum_example.cpp
     main.cpp
 )
 
