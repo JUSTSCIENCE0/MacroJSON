@@ -19,7 +19,8 @@
 - [Продвинутые возможности](advanced_features.md)
 - [Поддерживаемые типы данных](supported_types.md)
 - [Параметры валидации](validation_params.md)
-- [Пример использования](../../apps/base-demo) и [полная демонстрация функциональности](../../apps/base-demo)
+- [Генерация кода из JSON Schema (Beta)](generation_from_schema.md)
+- [Пример использования](../../apps/doc-demo) и [полная демонстрация функциональности](../../apps/base-demo)
 
 ## Сторонние зависимости
 

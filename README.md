@@ -19,7 +19,8 @@ When working with JSON data in C++, it often requires writing duplicate code wit
 - [Advanced Features](doc/advanced_features.md)
 - [Supported Data Types](doc/supported_types.md)
 - [Validation Parameters](doc/validation_params.md)
-- [Usage Example](apps/base-demo) and [full functionality demonstration](apps/base-demo)
+- [Code Generation from JSON Schema (Beta)](doc/generation_from_schema.md)
+- [Usage Example](apps/doc-demo) and [full functionality demonstration](apps/base-demo)
 
 ## Third-party dependencies
 
