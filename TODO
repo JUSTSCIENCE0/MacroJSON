@@ -1,5 +1,11 @@
-Variables support
-Integration test
-Json schema generation cache
-Validators
-Documentation
+Core:
+- Variables support
+- Integration test
+- Json schema generation cache
+- Conditional Expressions and Logical Operations
+
+Generation from JSON Schema:
+- Support for JSON Schema features:
+  - $ref, $defs
+  - allOf, anyOf, not
+  - Conditional schema validation
