@@ -37,7 +37,7 @@ namespace macrojson {
             rapidjson::Writer<rapidjson::OStreamWrapper> writer(osw);
             doc.Accept(writer);
         }
-        catch (const std::filesystem::filesystem_error& e) {
+        catch (const std::filesystem::filesystem_error&) {
             return E_MJSON_FILE_ERROR;
         }
 
