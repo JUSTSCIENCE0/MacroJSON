@@ -169,3 +169,43 @@ MJSON_OBJECT_BEGIN(PolymorphicExample,
         "Polymorphic Array Attribute",
         "An array of polymorphic object attributes")
 MJSON_OBJECT_END(PolymorphicExample)
+
+MJSON_ENUM_BEGIN(VariantTypesExample,
+        "Variant Types Example",
+        "An example enum that is used as a type discriminator for demonstrating std::variant")
+    MJSON_ENUM_UNIT(E_VARIANT_TYPE_1, variant1)
+    MJSON_ENUM_UNIT(E_VARIANT_TYPE_2, variant2)
+    MJSON_ENUM_UNIT(E_VARIANT_TYPE_3, variant3)
+MJSON_ENUM_END(VariantTypesExample)
+
+MJSON_OBJECT_BEGIN(VariantType1,
+        "Variant Example Type 1",
+        "One of the options for demonstrating std::variant")
+    MJSON_FIELD(int,    v1_i32_attr,
+        "I32 Attribute",
+        "32-bit integer attribute",
+        macrojson::Range<int>{})
+    MJSON_FIELD(double, v1_dbl_attr,
+        "Double Attribute",
+        "Double-precision floating-point attribute")
+MJSON_OBJECT_END(VariantType1)
+
+MJSON_OBJECT_BEGIN(VariantType2,
+        "Variant Example Type 2",
+        "One of the options for demonstrating std::variant")
+    MJSON_FIELD(uint64_t,    v2_u64_attr,
+        "U64 Attribute",
+        "64-bit unsigned integer attribute")
+    MJSON_FIELD(std::string, v2_str_attr,
+        "String Attribute", nullptr,
+        macrojson::StringLength{ 1, 100 })
+MJSON_OBJECT_END(VariantType2)
+
+MJSON_OBJECT_BEGIN(VariantType3,
+        "Variant Example Type 3",
+        "One of the options for demonstrating std::variant")
+    MJSON_FIELD(float,         v3_flt_attr,
+        "Float Attribute",
+        "Single-precision floating-point attribute")
+    MJSON_FIELD(SimpleExample, v3_obj_attr, nullptr, nullptr)
+MJSON_OBJECT_END(VariantType3)
