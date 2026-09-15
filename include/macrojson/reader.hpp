@@ -103,3 +103,36 @@ namespace macrojson { \
         return MJsonErrorCode::E_MJSON_OK; \
     } \
 }
+
+// variant reader macros
+#define MJSON_VARIANT_BEGIN(variant_name, variant_type_enum, ...) \
+namespace macrojson { \
+    static inline MJsonErrorCode read_from_json( \
+            const char* name, const rapidjson::Value& root, variant_name& val) { \
+        if (name && !root.HasMember(name)) { \
+            return MJsonErrorCode::E_MJSON_NOT_EXISTS; \
+        } \
+        const rapidjson::Value& jobj = name ? root[name] : root; \
+        if (!jobj.IsObject()) { \
+            return MJsonErrorCode::E_MJSON_TYPE_MISMATCH; \
+        } \
+        variant_type_enum current_type{}; \
+        MJSON_CHECK_ERROR(read_from_json("type", jobj, current_type)); \
+        switch (current_type) {
+
+#define MJSON_VARIANT_UNIT(type, type_enumerator) \
+        case type_enumerator: { \
+            type obj{}; \
+            auto obj_name = need_add_value_name<type> ? "value" : nullptr; \
+            MJSON_CHECK_ERROR(read_from_json(obj_name, jobj, obj)); \
+            val = std::move(obj); \
+            break; \
+        }
+
+#define MJSON_VARIANT_END(variant_name) \
+        default: \
+            return MJsonErrorCode::E_MJSON_UNKNOWN_ENUM; \
+        } \
+        return MJsonErrorCode::E_MJSON_OK; \
+    } \
+}

@@ -114,4 +114,9 @@ namespace macrojson { \
     } \
 }
 
+// variant schema macros
+#define MJSON_VARIANT_BEGIN(variant_name, variant_type_enum, def_title, def_descr)
 
+#define MJSON_VARIANT_UNIT(type, type_enumerator)
+
+#define MJSON_VARIANT_END(variant_name)

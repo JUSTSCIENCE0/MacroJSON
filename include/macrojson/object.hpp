@@ -58,3 +58,13 @@
 
 #define MJSON_POLYMORPHIC_OBJECT_END()
 
+// variant generation macros
+#define MJSON_VARIANT_BEGIN(variant_name, ...) \
+    using variant_name = std::variant<
+
+#define MJSON_VARIANT_UNIT(type, type_enumerator) \
+        type,
+
+#define MJSON_VARIANT_END(variant_name) \
+    macrojson::MJsonVoidType>;
+

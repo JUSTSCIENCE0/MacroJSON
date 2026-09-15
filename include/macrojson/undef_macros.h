@@ -69,3 +69,16 @@
 #ifdef MJSON_POLYMORPHIC_OBJECT_END
 #  undef MJSON_POLYMORPHIC_OBJECT_END
 #endif
+
+// variant generation macros
+#ifdef MJSON_VARIANT_BEGIN
+#  undef MJSON_VARIANT_BEGIN
+#endif
+
+#ifdef MJSON_VARIANT_UNIT
+#  undef MJSON_VARIANT_UNIT
+#endif
+
+#ifdef MJSON_VARIANT_END
+#  undef MJSON_VARIANT_END
+#endif

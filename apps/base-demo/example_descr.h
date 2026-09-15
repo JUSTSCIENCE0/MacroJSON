@@ -209,3 +209,22 @@ MJSON_OBJECT_BEGIN(VariantType3,
         "Single-precision floating-point attribute")
     MJSON_FIELD(SimpleExample, v3_obj_attr, nullptr, nullptr)
 MJSON_OBJECT_END(VariantType3)
+
+MJSON_VARIANT_BEGIN(VariantExample, VariantTypesExample,
+        "Variant Example",
+        "An example of std::variant type")
+    MJSON_VARIANT_UNIT(VariantType1, E_VARIANT_TYPE_1)
+    MJSON_VARIANT_UNIT(VariantType2, E_VARIANT_TYPE_2)
+    MJSON_VARIANT_UNIT(VariantType3, E_VARIANT_TYPE_3)
+MJSON_VARIANT_END(VariantExample)
+
+//MJSON_OBJECT_BEGIN(VariantContainerExample,
+//        "Variant Container Example",
+//        "An example object that contains a std::variant attribute")
+//    MJSON_FIELD(VariantExample, variant_attr,
+//        "Variant Attribute",
+//        "A std::variant attribute")
+//    MJSON_FIELD(std::vector<VariantExample>, variant_arr,
+//        "Variant Array Attribute",
+//        "An array of std::variant attributes")
+//MJSON_OBJECT_END(VariantContainerExample)
