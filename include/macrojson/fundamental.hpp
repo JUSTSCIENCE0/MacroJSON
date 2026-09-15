@@ -19,6 +19,7 @@
 #include <memory>
 #include <type_traits>
 #include <limits>
+#include <variant>
 
 #include <fstream>
 #include <filesystem>
@@ -341,4 +342,13 @@ namespace macrojson {
             static_assert(false, "unsupported type");
         }
     }
+
+    // Ancillary
+    struct MJsonVoidType {};
+    template <typename T>
+    inline constexpr bool need_add_value_name = 
+        std::is_compound_v<T> &&
+        !is_std_optional_v<T> &&
+        !is_std_vector_v<T> &&
+        !is_std_unique_ptr_v<T> && !is_std_shared_ptr_v<T>;
 }
