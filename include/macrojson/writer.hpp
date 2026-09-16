@@ -95,8 +95,25 @@ namespace macrojson { \
 }
 
 // variant writer macros
-#define MJSON_VARIANT_BEGIN(variant_name, ...)
+#define MJSON_VARIANT_BEGIN(variant_name, ...) \
+namespace macrojson { \
+    static inline void write_to_json( \
+            const char* name, const variant_name& jval, \
+            rapidjson::Document::AllocatorType& alloc, rapidjson::Value& root) { \
+        rapidjson::Value jobj(rapidjson::kObjectType);
 
-#define MJSON_VARIANT_UNIT(type, type_enumerator)
+#define MJSON_VARIANT_UNIT(type, type_enumerator) \
+        if (std::holds_alternative<type>(jval)) { \
+            write_to_json("type", type_enumerator, alloc, jobj); \
+            auto obj_name = need_add_value_name<type> ? "value" : nullptr; \
+            write_to_json(obj_name, std::get<type>(jval), alloc, jobj); \
+        }
 
-#define MJSON_VARIANT_END(variant_name)
+#define MJSON_VARIANT_END(variant_name) \
+        if (name) { \
+            write_to_json(name, std::move(jobj), alloc, root); \
+        } else { \
+            root = std::move(jobj); \
+        } \
+    } \
+}

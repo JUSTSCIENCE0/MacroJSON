@@ -16,6 +16,7 @@ int main() {
     enum_schema_example();
     polymorphic_simple_schema_example();
     polymorphic_complex_schema_example();
+    variant_schema_example();
 
     simple_write_example();
     level1_write_example();

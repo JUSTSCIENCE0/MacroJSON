@@ -13,3 +13,4 @@ void array_schema_example();
 void enum_schema_example();
 void polymorphic_simple_schema_example();
 void polymorphic_complex_schema_example();
+void variant_schema_example();

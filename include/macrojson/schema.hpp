@@ -115,8 +115,42 @@ namespace macrojson { \
 }
 
 // variant schema macros
-#define MJSON_VARIANT_BEGIN(variant_name, variant_type_enum, def_title, def_descr)
+#define MJSON_VARIANT_BEGIN(variant_name, variant_type_enum, def_title, def_descr) \
+namespace macrojson { \
+    template<> \
+    inline void generate_schema<variant_name>( \
+            const char* name, const char* title, const char* description, \
+            rapidjson::Document::AllocatorType& alloc, rapidjson::Value& schema) { \
+        if (!title) \
+            title = def_title; \
+        if (!description) \
+            description = def_descr; \
+        generate_schema_base(name, title, description, "object", alloc, schema); \
+        rapidjson::Value& jobj = name ? schema[name] : schema; \
+        jobj.AddMember("oneOf", rapidjson::Value(rapidjson::kArrayType), alloc); \
+        rapidjson::Value& joneof = jobj["oneOf"]; \
 
-#define MJSON_VARIANT_UNIT(type, type_enumerator)
+#define MJSON_VARIANT_UNIT(type, type_enumerator) \
+        { \
+            auto jvariant = rapidjson::Value(rapidjson::kObjectType); \
+            if constexpr (!need_add_value_name<type>) { \
+                generate_schema<type>(nullptr, nullptr, nullptr, alloc, jvariant); \
+            } else { \
+                jvariant.AddMember("properties", rapidjson::Value(rapidjson::kObjectType), alloc); \
+                jvariant.AddMember("required", rapidjson::Value(rapidjson::kArrayType), alloc); \
+            } \
+            rapidjson::Value& j_var_props = jvariant["properties"]; \
+            rapidjson::Value& j_var_req = jvariant["required"]; \
+            j_var_props.AddMember("type", rapidjson::Value(rapidjson::kObjectType), alloc); \
+            write_to_json("const", type_enumerator, alloc, j_var_props["type"]); \
+            j_var_req.PushBack("type", alloc); \
+            if constexpr (need_add_value_name<type>) { \
+                generate_schema<type>("value", nullptr, nullptr, alloc, j_var_props); \
+                j_var_req.PushBack("value", alloc); \
+            } \
+            joneof.PushBack(jvariant, alloc); \
+        }
 
-#define MJSON_VARIANT_END(variant_name)
+#define MJSON_VARIANT_END(variant_name) \
+    } \
+}

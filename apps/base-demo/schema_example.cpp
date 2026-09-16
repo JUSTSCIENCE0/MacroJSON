@@ -79,3 +79,12 @@ void polymorphic_complex_schema_example() {
     std::cout << schema << std::endl;
     std::cout << std::endl;
 }
+
+void variant_schema_example() {
+    auto schema = macrojson::get_json_schema_str<VariantExample>(
+        "http://example.com/schemas/variant_example.json");
+    std::cout << "variant_schema_example" << std::endl;
+    std::cout << "Generated JSON Schema:" << std::endl;
+    std::cout << schema << std::endl;
+    std::cout << std::endl;
+}

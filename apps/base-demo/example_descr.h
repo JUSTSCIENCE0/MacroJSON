@@ -176,6 +176,7 @@ MJSON_ENUM_BEGIN(VariantTypesExample,
     MJSON_ENUM_UNIT(E_VARIANT_TYPE_1, variant1)
     MJSON_ENUM_UNIT(E_VARIANT_TYPE_2, variant2)
     MJSON_ENUM_UNIT(E_VARIANT_TYPE_3, variant3)
+    MJSON_ENUM_UNIT(E_VARIANT_INT,    variant_int)
 MJSON_ENUM_END(VariantTypesExample)
 
 MJSON_OBJECT_BEGIN(VariantType1,
@@ -216,15 +217,16 @@ MJSON_VARIANT_BEGIN(VariantExample, VariantTypesExample,
     MJSON_VARIANT_UNIT(VariantType1, E_VARIANT_TYPE_1)
     MJSON_VARIANT_UNIT(VariantType2, E_VARIANT_TYPE_2)
     MJSON_VARIANT_UNIT(VariantType3, E_VARIANT_TYPE_3)
+    MJSON_VARIANT_UNIT(int,          E_VARIANT_INT)
 MJSON_VARIANT_END(VariantExample)
 
-//MJSON_OBJECT_BEGIN(VariantContainerExample,
-//        "Variant Container Example",
-//        "An example object that contains a std::variant attribute")
-//    MJSON_FIELD(VariantExample, variant_attr,
-//        "Variant Attribute",
-//        "A std::variant attribute")
-//    MJSON_FIELD(std::vector<VariantExample>, variant_arr,
-//        "Variant Array Attribute",
-//        "An array of std::variant attributes")
-//MJSON_OBJECT_END(VariantContainerExample)
+MJSON_OBJECT_BEGIN(VariantContainerExample,
+        "Variant Container Example",
+        "An example object that contains a std::variant attribute")
+    MJSON_FIELD(VariantExample, variant_attr,
+        "Variant Attribute",
+        "A std::variant attribute")
+    MJSON_FIELD(std::vector<VariantExample>, variant_arr,
+        "Variant Array Attribute",
+        "An array of std::variant attributes")
+MJSON_OBJECT_END(VariantContainerExample)
