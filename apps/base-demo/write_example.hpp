@@ -12,3 +12,4 @@ void array_write_example();
 void enum_write_example();
 void polymorphic_simple_write_example();
 void polymorphic_complex_write_example();
+void variant_write_example();

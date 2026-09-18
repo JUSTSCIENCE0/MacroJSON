@@ -25,6 +25,7 @@ int main() {
     enum_write_example();
     polymorphic_simple_write_example();
     polymorphic_complex_write_example();
+    variant_write_example();
 
     simple_read_example();
     level1_read_example();
@@ -33,5 +34,6 @@ int main() {
     enum_read_example();
     polymorphic_simple_read_example();
     polymorphic_complex_read_example();
+    variant_read_example();
     return 0;
 }

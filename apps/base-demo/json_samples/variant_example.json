@@ -7,7 +7,7 @@
     "variant_arr": [
         {
             "type": "variant2",
-            "v2_u64_attr": 22.22,
+            "v2_u64_attr": 2222,
             "v2_str_attr": "example in array"
         },
         {
@@ -19,6 +19,10 @@
                 "u64_attr": 6666,
                 "str_attr": "example in nested object"
             }
+        },
+        {
+            "type": "variant_int",
+            "value": 100
         }
     ]
 }

@@ -194,3 +194,35 @@ void polymorphic_complex_write_example() {
     std::cout << json << std::endl;
     std::cout << std::endl;
 }
+
+void variant_write_example() {
+    VariantContainerExample example{
+        /*variant_attr*/ VariantType1 {
+            /*v1_i32_attr*/ 42,
+            /*v1_dbl_attr*/ 3.14
+        },
+        /*variant_arr*/ {
+            VariantType2 {
+                /*v2_u64_attr*/ 1234567890ULL,
+                /*v2_str_attr*/ "Hello"
+            },
+            VariantType3 {
+                /*v3_flt_attr*/ 1.23f,
+                /*v3_obj_attr*/ {
+                    /*i32_attr*/ 42,
+                    /*dbl_attr*/ 3.14,
+                    /*u64_attr*/ 1234567890123456789ULL,
+                    /*str_attr*/ "Nested Object"
+                }
+            },
+            /*int*/ 100
+        }
+    };
+
+    std::string json{};
+    macrojson::object_to_json_str(example, json);
+    std::cout << "variant_write_example" << std::endl;
+    std::cout << "Serialized JSON:" << std::endl;
+    std::cout << json << std::endl;
+    std::cout << std::endl;
+}

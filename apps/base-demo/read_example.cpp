@@ -212,3 +212,51 @@ void polymorphic_complex_read_example() {
     }
     std::cout << std::endl;
 }
+
+void print(const VariantExample& var) {
+    std::visit([](const auto& value) {
+        using T = std::decay_t<decltype(value)>;
+        if constexpr (std::is_same_v<T, VariantType1>) {
+            std::cout << "VariantType1:" << std::endl;
+            std::cout << "\ti32_attr = " << value.v1_i32_attr << std::endl;
+            std::cout << "\tdbl_attr = " << value.v1_dbl_attr << std::endl;
+        } else if constexpr (std::is_same_v<T, VariantType2>) {
+            std::cout << "VariantType2:" << std::endl;
+            std::cout << "\tu64_attr = " << value.v2_u64_attr << std::endl;
+            std::cout << "\tstr_attr = " << value.v2_str_attr << std::endl;
+        } else if constexpr (std::is_same_v<T, VariantType3>) {
+            std::cout << "VariantType3:" << std::endl;
+            std::cout << "\tflt_attr = " << value.v3_flt_attr << std::endl;
+            std::cout << "\tobj_attr.str_attr = " << value.v3_obj_attr.str_attr << std::endl;
+        } else if constexpr (std::is_same_v<T, int>) {
+            std::cout << "VariantTypeInt:" << std::endl;
+            std::cout << "\tint: " << value << std::endl;
+        } else {
+            std::cout << "Unknown variant type." << std::endl;
+        }
+    }, var);
+}
+
+void variant_read_example() {
+    VariantContainerExample example{};
+    std::string error_descr{};
+    auto code = macrojson::json_file_to_object(JSON_EXAMPLES_DIRECTORY "variant_example.json", example, error_descr);
+    if (code != macrojson::MJsonErrorCode::E_MJSON_OK) {
+        std::cerr << "Error reading VariantContainerExample from JSON." << std::endl;
+        if (!error_descr.empty()) {
+            std::cerr << error_descr << std::endl;
+        }
+        return;
+    }
+
+    std::cout << "variant_read_example" << std::endl;
+    std::cout << "Deserialized JSON:" << std::endl;
+    std::cout << "variant_attr: ";
+    print(example.variant_attr);
+    std::cout << "variant_arr size = " << example.variant_arr.size() << std::endl;
+    std::cout << "variant_arr: " << std::endl;
+    for (const auto& item : example.variant_arr) {
+        print(item);
+    }
+    std::cout << std::endl;
+}

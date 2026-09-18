@@ -12,3 +12,4 @@ void array_read_example();
 void enum_read_example();
 void polymorphic_simple_read_example();
 void polymorphic_complex_read_example();
+void variant_read_example();
