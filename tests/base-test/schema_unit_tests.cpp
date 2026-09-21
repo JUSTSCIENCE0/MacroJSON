@@ -349,6 +349,102 @@ void check_polymorphic_example_schema(const rapidjson::Value& schema) {
     check_required_fields(alt2, {"type", "bool_attr", "str_attr"});
 }
 
+void check_variant_type1_schema(const rapidjson::Value& schema) {
+    ASSERT_TRUE(schema.IsObject());
+
+    check_title(schema, "Variant Example Type 1");
+    check_description(schema, "One of the options for demonstrating std::variant");
+    check_type(schema, "object");
+
+    const auto& properties = get_properties(schema);
+
+    const auto& v1_i32_attr = get_field(properties, "v1_i32_attr");
+    check_title(v1_i32_attr, "I32 Attribute");
+    check_description(v1_i32_attr, "32-bit integer attribute");
+    check_type(v1_i32_attr, "integer");
+
+    const auto& v1_dbl_attr = get_field(properties, "v1_dbl_attr");
+    check_title(v1_dbl_attr, "Double Attribute");
+    check_description(v1_dbl_attr, "Double-precision floating-point attribute");
+    check_type(v1_dbl_attr, "number");
+
+    const auto& obj_type = get_field(properties, "type");
+    check_str_param(obj_type, "const", "variant1");
+
+    check_required_fields(schema, {"v1_i32_attr", "v1_dbl_attr", "type"});
+}
+
+void check_variant_type2_schema(const rapidjson::Value& schema) {
+    ASSERT_TRUE(schema.IsObject());
+
+    check_title(schema, "Variant Example Type 2");
+    check_description(schema, "One of the options for demonstrating std::variant");
+    check_type(schema, "object");
+
+    const auto& properties = get_properties(schema);
+
+    const auto& v2_u64_attr = get_field(properties, "v2_u64_attr");
+    check_title(v2_u64_attr, "U64 Attribute");
+    check_description(v2_u64_attr, "64-bit unsigned integer attribute");
+    check_type(v2_u64_attr, "integer");
+
+    const auto& v2_str_attr = get_field(properties, "v2_str_attr");
+    check_title(v2_str_attr, "String Attribute");
+    check_type(v2_str_attr, "string");
+
+    const auto& obj_type = get_field(properties, "type");
+    check_str_param(obj_type, "const", "variant2");
+
+    check_required_fields(schema, {"v2_u64_attr", "v2_str_attr", "type"});
+}
+
+void check_variant_type3_schema(const rapidjson::Value& schema) {
+    ASSERT_TRUE(schema.IsObject());
+
+    check_title(schema, "Variant Example Type 3");
+    check_description(schema, "One of the options for demonstrating std::variant");
+    check_type(schema, "object");
+
+    const auto& properties = get_properties(schema);
+
+    const auto& v3_flt_attr = get_field(properties, "v3_flt_attr");
+    check_title(v3_flt_attr, "Float Attribute");
+    check_description(v3_flt_attr, "Single-precision floating-point attribute");
+    check_type(v3_flt_attr, "number");
+
+    const auto& v3_obj_attr = get_field(properties, "v3_obj_attr");
+    check_simple_example_schema(v3_obj_attr);
+
+    const auto& obj_type = get_field(properties, "type");
+    check_str_param(obj_type, "const", "variant3");
+
+    check_required_fields(schema, {"v3_flt_attr", "v3_obj_attr", "type"});
+}
+
+void check_variant_example_schema(const rapidjson::Value& schema) {
+    ASSERT_TRUE(schema.IsObject());
+
+    check_title(schema, "Variant Example");
+    check_description(schema, "An example of std::variant type");
+    check_type(schema, "object");
+
+    const auto& alternatives = get_alternatives(schema);
+    ASSERT_EQ(alternatives.Size(), 4);
+
+    check_variant_type1_schema(alternatives[0]);
+    check_variant_type2_schema(alternatives[1]);
+    check_variant_type3_schema(alternatives[2]);
+
+    const auto& int_alt = alternatives[3];
+    ASSERT_TRUE(int_alt.IsObject());
+    const auto& int_alt_props = get_properties(int_alt);
+    const auto& int_type = get_field(int_alt_props, "type");
+    check_str_param(int_type, "const", "variant_int");
+    const auto& int_value = get_field(int_alt_props, "value");
+    check_type(int_value, "integer");
+    check_required_fields(int_alt, {"type", "value"});
+}
+
 TEST(SchemaTests, SimpleExampleSchema) {
     auto schema_doc = macrojson::get_json_schema_doc<SimpleExample>();
     check_simple_example_schema(schema_doc);
@@ -382,4 +478,9 @@ TEST(SchemaTests, EnumExampleSchema) {
 TEST(SchemaTests, PolymorphicExampleSchema) {
     auto schema_doc = macrojson::get_json_schema_doc<BaseExample>();
     check_polymorphic_example_schema(schema_doc);
+}
+
+TEST(SchemaTests, VariantExampleSchema) {
+    auto schema_doc = macrojson::get_json_schema_doc<VariantExample>();
+    check_variant_example_schema(schema_doc);
 }
