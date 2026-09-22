@@ -222,3 +222,42 @@ TEST(ReaderTests, PolymorphicExampleTest) {
     );
     check_object(static_cast<Object2Example&>(*example2), doc2);
 }
+
+TEST(ReaderTests, VariantExampleTest) {
+    const char* json_str = R"({
+        "variant_attr": {
+            "v1_i32_attr": 42,
+            "v1_dbl_attr": 3.14,
+            "type": "variant1"
+        },
+        "variant_arr": [
+            {
+                "v2_u64_attr": 3735928559,
+                "v2_str_attr": "Variant Type 2",
+                "type": "variant2"
+            },
+            {
+                "v3_flt_attr": 1.6180000305175781,
+                "v3_obj_attr": {
+                    "i32_attr": 256,
+                    "dbl_attr": 0.5772,
+                    "u64_attr": 112233445566778899,
+                    "str_attr": "Level 2 Simple Example"
+                },
+                "type": "variant3"
+            },
+            {
+                "value": 100,
+                "type": "variant_int"
+            }
+        ]
+    })";
+    rapidjson::Document doc;
+    doc.Parse(json_str);
+    VariantContainerExample example;
+    ASSERT_EQ(
+       macrojson::read_from_json(nullptr, doc, example),
+       macrojson::MJsonErrorCode::E_MJSON_OK
+    );
+    check_object(example, doc);
+}

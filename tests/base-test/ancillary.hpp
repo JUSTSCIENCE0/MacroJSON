@@ -208,3 +208,69 @@ static void check_object(const Object2Example& example, const rapidjson::Value& 
     ASSERT_TRUE(obj["str_attr"].IsString());
     EXPECT_EQ(example.str_attr, obj["str_attr"].GetString());
 }
+
+static void check_object(const VariantType1& example, const rapidjson::Value& obj) {
+    ASSERT_TRUE(obj.IsObject());
+    ASSERT_TRUE(obj.HasMember("v1_i32_attr"));
+    ASSERT_TRUE(obj["v1_i32_attr"].IsInt());
+    EXPECT_EQ(example.v1_i32_attr, obj["v1_i32_attr"].GetInt());
+    ASSERT_TRUE(obj.HasMember("v1_dbl_attr"));
+    ASSERT_TRUE(obj["v1_dbl_attr"].IsDouble());
+    EXPECT_EQ(example.v1_dbl_attr, obj["v1_dbl_attr"].GetDouble());
+}
+
+static void check_object(const VariantType2& example, const rapidjson::Value& obj) {
+    ASSERT_TRUE(obj.IsObject());
+    ASSERT_TRUE(obj.HasMember("v2_u64_attr"));
+    ASSERT_TRUE(obj["v2_u64_attr"].IsInt64());
+    EXPECT_EQ(example.v2_u64_attr, obj["v2_u64_attr"].GetInt64());
+    ASSERT_TRUE(obj.HasMember("v2_str_attr"));
+    ASSERT_TRUE(obj["v2_str_attr"].IsString());
+    EXPECT_EQ(example.v2_str_attr, obj["v2_str_attr"].GetString());
+}
+
+static void check_object(const VariantType3& example, const rapidjson::Value& obj) {
+    ASSERT_TRUE(obj.IsObject());
+    ASSERT_TRUE(obj.HasMember("v3_flt_attr"));
+    ASSERT_TRUE(obj["v3_flt_attr"].IsFloat());
+    EXPECT_EQ(example.v3_flt_attr, obj["v3_flt_attr"].GetFloat());
+    ASSERT_TRUE(obj.HasMember("v3_obj_attr"));
+    check_object(example.v3_obj_attr, obj["v3_obj_attr"]);
+}
+
+static void check_object(const VariantExample& example, const rapidjson::Value& obj) {
+    ASSERT_TRUE(obj.IsObject());
+    ASSERT_TRUE(obj.HasMember("type"));
+    ASSERT_TRUE(obj["type"].IsString());
+    std::string obj_type = obj["type"].GetString();
+    if (obj_type == "variant1") {
+        ASSERT_TRUE(std::holds_alternative<VariantType1>(example));
+        const auto& vt1 = std::get<VariantType1>(example);
+        check_object(vt1, obj);
+    } else if (obj_type == "variant2") {
+        ASSERT_TRUE(std::holds_alternative<VariantType2>(example));
+        const auto& vt2 = std::get<VariantType2>(example);
+        check_object(vt2, obj);
+    } else if (obj_type == "variant3") {
+        ASSERT_TRUE(std::holds_alternative<VariantType3>(example));
+        const auto& vt3 = std::get<VariantType3>(example);
+        check_object(vt3, obj);
+    } else if (obj_type == "variant_int") {
+        ASSERT_TRUE(std::holds_alternative<int>(example));
+        int value = std::get<int>(example);
+        ASSERT_EQ(value, obj["value"].GetInt());
+    }
+}
+
+static void check_object(const VariantContainerExample& example, const rapidjson::Value& obj) {
+    ASSERT_TRUE(obj.IsObject());
+    ASSERT_TRUE(obj.HasMember("variant_attr"));
+    ASSERT_TRUE(obj["variant_attr"].IsObject());
+    check_object(example.variant_attr, obj["variant_attr"]);
+    ASSERT_TRUE(obj.HasMember("variant_arr"));
+    ASSERT_TRUE(obj["variant_arr"].IsArray());
+    ASSERT_EQ(example.variant_arr.size(), obj["variant_arr"].Size()); \
+    for (rapidjson::SizeType i = 0; i < obj["variant_arr"].Size(); ++i) {
+        check_object(example.variant_arr[i], obj["variant_arr"][i]);
+    }
+}

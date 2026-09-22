@@ -161,3 +161,32 @@ TEST(WriterTests, PolymorphicExampleTest) {
     macrojson::write_to_json(nullptr, example2, doc2.GetAllocator(), doc2);
     check_object(obj2, doc2);
 }
+
+TEST(WriterTests, VariantExampleTest) {
+    VariantContainerExample example{
+        VariantType1{
+            /*v1_i32_attr*/ 42,
+            /*v1_dbl_attr*/ 3.14
+        },
+        {
+            VariantType2{
+                /*v2_u64_attr*/ 0xdeadbeefULL,
+                /*v2_str_attr*/ "Variant Type 2"
+            },
+            VariantType3{
+                /*v3_flt_attr*/ 1.618f,
+                /*v3_obj_attr*/ {
+                    /* i32_attr */ 256,
+                    /* dbl_attr */ 0.5772,
+                    /* u64_attr */ 112233445566778899ULL,
+                    /* str_attr */ "Level 2 Simple Example"
+                }
+            },
+            100
+        }
+    };
+    rapidjson::Document doc;
+    doc.SetObject();
+    macrojson::write_to_json(nullptr, example, doc.GetAllocator(), doc);
+    check_object(example, doc);
+}
