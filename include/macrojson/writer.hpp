@@ -104,9 +104,9 @@ namespace macrojson { \
 
 #define MJSON_VARIANT_UNIT(type, type_enumerator) \
         if (std::holds_alternative<type>(jval)) { \
-            write_to_json("type", type_enumerator, alloc, jobj); \
             auto obj_name = need_add_value_name<type> ? "value" : nullptr; \
             write_to_json(obj_name, std::get<type>(jval), alloc, jobj); \
+            write_to_json("type", type_enumerator, alloc, jobj); \
         }
 
 #define MJSON_VARIANT_END(variant_name) \
